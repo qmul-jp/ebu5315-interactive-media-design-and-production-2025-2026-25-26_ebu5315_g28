@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz | Circle Planet</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="quiz.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏（完全复用主页） -->
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='index.html'">
+            <div class="logo-circle">
+                <i class="fas fa-circle"></i>
+            </div>
+            <span class="logo-text">Circle Planet</span>
+        </div>
+        <div class="main-nav">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="game.html" class="nav-link">Game</a>
+            <a href="quiz.html" class="nav-link active">Quiz</a>
+        </div>
+        <div class="function-buttons">
+            <button class="btn btn-outline btn-sm" id="langBtn" aria-label="Language Switch">
+                <i class="fas fa-language"></i> <span>EN</span>
+            </button>
+            <div class="font-controls" role="group" aria-label="Font Size Control">
+                <button class="font-btn" id="fontS" aria-label="Small Font">A-</button>
+                <button class="font-btn active" id="fontM" aria-label="Medium Font">A</button>
+                <button class="font-btn" id="fontL" aria-label="Large Font">A+</button>
+            </div>
+            <button class="btn btn-sm theme-toggle" id="themeBtn" aria-label="Toggle Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="window.location.href='index.html'">
+                <i class="fas fa-home"></i>
+            </button>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html" class="mobile-nav-link">Home</a>
+        <a href="game.html" class="mobile-nav-link">Game</a>
+        <a href="quiz.html" class="mobile-nav-link">Quiz</a>
+    </div>
+
+    <!-- 面包屑 -->
+    <div class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Quiz Challenge</span>
+    </div>
+
+    <div class="container">
+        <!-- Quiz 顶部标题 -->
+        <section class="quiz-header" id="quiz-top-header">
+            <h1 class="quiz-title">Circle Theorem Quiz</h1>
+            <p class="quiz-subtitle">Test your geometry skills with interactive challenges</p>
+        </section>
+
+        <!-- 难度选择区（Pre-Quiz） -->
+        <section class="quiz-selection" id="quizSelection">
+  <!-- 找到这行，加 id="challenge-title" -->
+            <h2 id="challenge-title">Choose your challenge</h2>
+            <div class="quiz-grid">
+                <!-- 题目卡片 -->
+                <div class="quiz-grid">
+
+    <!-- 只保留这一个卡片，其他 5 个全部删除 -->
+<div class="quiz-card">
+    <div class="quiz-icon"><i class="fas fa-circle-notch"></i></div>
+    <h3>Circle Theorem Challenge</h3>
+    
+    <!-- 难度选择区：可点击、保持选中 -->
+    <div class="difficulty">
+        <button class="diff-btn" data-level="easy">Easy</button>
+        <button class="diff-btn" data-level="medium">Medium</button>
+        <button class="diff-btn" data-level="hard">Hard</button>
+    </div>
+
+    <!-- Start按钮：必须选难度后才能点（可选，也可以直接点） -->
+    <button class="btn btn-primary start-quiz" id="startQuizBtn" disabled>Enter Quiz</button>
+</div>
+
+</div>
+        </section>
+
+        <!-- 答题区（默认隐藏） -->
+        <section class="quiz-game" id="quizGame" style="display: none;">
+            <div class="quiz-progress">
+                <span id="stepText">Step 1 of 10</span>
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            </div>
+
+            <div class="quiz-canvas-wrapper">
+                <svg viewBox="0 0 300 300" class="quiz-svg" id="quizSvg">
+                    <circle cx="150" cy="150" r="120" fill="none" stroke="var(--primary)" stroke-width="2"/>
+                    <circle cx="150" cy="150" r="4" fill="var(--accent)"/>
+                    <line x1="150" y1="150" x2="240" y2="90" stroke="var(--secondary)" stroke-width="2"/>
+                    <line x1="150" y1="150" x2="60" y2="90" stroke="var(--secondary)" stroke-width="2"/>
+                    <line x1="240" y1="90" x2="150" y2="240" stroke="var(--primary)" stroke-width="2"/>
+                    <line x1="60" y1="90" x2="150" y2="240" stroke="var(--primary)" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <div class="quiz-question">
+                <h3 id="questionText">What is the measure of angle ABC if arc AC is 60 degrees?</h3>
+            </div>
+
+            <div class="quiz-options" id="quizOptions">
+                <button class="option-btn" data-answer="A">Option A</button>
+                <button class="option-btn" data-answer="B">Option B</button>
+                <button class="option-btn" data-answer="C">Option C</button>
+                <button class="option-btn" data-answer="D">Option D</button>
+            </div>
+
+            <div class="quiz-actions">
+                <button class="btn btn-outline" id="prevBtn">Previous</button>
+                <button class="btn btn-primary" id="checkBtn">Check Answer</button>
+                <button class="btn btn-outline" id="nextBtn">Next</button>
+            </div>
+        </section>
+
+        <!-- 结果页（默认隐藏） -->
+        <section class="quiz-result" id="quizResult" style="display: none;">
+            <div class="result-card">
+                <h2 id="resultScore">8/10 Correct!</h2>
+                <div class="result-review">
+                    <p>Tangent Theorem: Mastered</p>
+                    <p>Secant Theorem: Needs Practice</p>
+                </div>
+                <div class="result-buttons">
+                    <button class="btn btn-outline" id="reviewBtn">Review Mistakes</button>
+                    <button class="btn btn-primary" id="restartBtn">Try Again</button>
+                    <button class="btn btn-outline" id="backBtn">Return to Hub</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚（完全复用主页） -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Circle Planet</h4>
+                <p>Interactive Circle Theorem Learning Platform</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="game.html">Game</a></li>
+                    <li><a href="quiz.html">Quiz</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
+                    <li><a href="cookies.html">Cookie Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Accessibility</h4>
+                <ul>
+                    <li><i class="fas fa-eye"></i> Colour-blind Friendly</li>
+                    <li><i class="fas fa-text-height"></i> Adjustable Font</li>
+                    <li><i class="fas fa-moon"></i> Dark Mode</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Circle Planet. All rights reserved.</p>
+            <p class="footer-features">
+                <span class="feature-tag">🎨 Colour-blind Friendly</span>
+                <span class="feature-tag">📱 Mobile Responsive</span>
+                <span class="feature-tag">🌐 Bilingual Support</span>
+                <span class="feature-tag">🌙 Dark Mode</span>
+            </p>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" aria-label="Back to Top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js"></script>
+    <script src="questions.js"></script>
+    <script src="quiz.js"></script>
+</body>
+</html>
