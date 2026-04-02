@@ -317,4 +317,5 @@ function initScrollAnimations() {
 // ========================================
 function scrollToVideo() {
     document.getElementById('videoSection').scrollIntoView({ behavior: 'smooth' });
+
 }
