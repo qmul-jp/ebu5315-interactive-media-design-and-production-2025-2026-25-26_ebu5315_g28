@@ -1,0 +1,140 @@
+/* ========================================
+   Game 主页面通用样式
+   完全复用舍友的CSS变量，100%视觉一致
+   ======================================== */
+
+/* 标题区 */
+.game-hero {
+    min-height: 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 0;
+    position: relative;
+}
+
+.game-hero .hero-subtitle {
+    max-width: 700px;
+}
+
+/* 8个定理卡片网格 */
+.theorems-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+    margin: 3rem 0 5rem;
+}
+
+.theorem-card {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 380px;
+}
+
+.theorem-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+}
+
+/* 解锁卡片的hover效果 */
+.theorem-card:not(.locked):hover {
+    transform: translateY(-12px);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(67, 97, 238, 0.4);
+}
+
+.theorem-card:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+}
+
+/* 锁定卡片样式 */
+.theorem-card.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.card-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 6px 20px rgba(67, 97, 238, 0.35);
+}
+
+.theorem-card h3 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.theorem-subtitle {
+    color: var(--secondary);
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+}
+
+.theorem-desc {
+    color: var(--gray);
+    line-height: 1.8;
+    flex-grow: 1;
+    margin-bottom: 1.5rem;
+}
+
+.card-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .game-hero {
+        min-height: auto;
+        padding: 2rem 0;
+    }
+
+    .game-hero .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .theorems-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-hero .hero-title {
+        font-size: 1.9rem;
+    }
+
+    .theorem-card {
+        min-height: auto;
+        padding: 2rem;
+    }
+}

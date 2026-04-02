@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circle Planet | Interactive Theorems</title>
+    <!-- 复用舍友的全局资源，100%样式一致 -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Game主页面样式 -->
+    <link rel="stylesheet" href="game.css">
+</head>
+
+<body>
+    <!-- 复用舍友的加载动画 -->
+    <div class="loader" id="loader">
+        <div class="loader-circle"></div>
+        <p class="loader-text">Loading Theorems...</p>
+    </div>
+
+    <!-- 完全复用舍友的导航栏，功能100%兼容 -->
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='index.html'">
+            <div class="logo-circle">
+                <i class="fas fa-circle"></i>
+            </div>
+            <span class="logo-text">Circle Planet</span>
+        </div>
+
+        <div class="main-nav">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="game.html" class="nav-link active">Game</a>
+            <a href="quiz.html" class="nav-link">Quiz</a>
+        </div>
+
+        <div class="function-buttons">
+            <button class="btn btn-outline btn-sm" id="langBtn">
+                <i class="fas fa-language"></i> <span>EN</span>
+            </button>
+            <div class="font-controls">
+                <button class="font-btn" id="fontS">A-</button>
+                <button class="font-btn active" id="fontM">A</button>
+                <button class="font-btn" id="fontL">A+</button>
+            </div>
+            <button class="btn btn-sm theme-toggle" id="themeBtn">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="window.location.href='index.html'">
+                <i class="fas fa-home"></i>
+            </button>
+        </div>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html" class="mobile-nav-link">Home</a>
+        <a href="game.html" class="mobile-nav-link">Game</a>
+        <a href="quiz.html" class="mobile-nav-link">Quiz</a>
+    </div>
+
+    <div class="breadcrumb">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Interactive Theorems</span>
+    </div>
+
+    <div class="container">
+        <!-- 标题区 -->
+        <div class="game-hero">
+            <div class="hero-badge">
+                <i class="fas fa-hand-pointer"></i> Drag & Explore
+            </div>
+            <h1 class="hero-title">
+                Explore 8 Core<br>
+                <span class="gradient-text">Circle Theorems</span>
+            </h1>
+            <p class="hero-subtitle">
+                Click any theorem card below to enter the interactive playground. 
+                Drag points on the circle to observe real-time angle relationships!
+            </p>
+        </div>
+
+        <!-- 8个定理卡片网格 -->
+        <div class="theorems-grid">
+            <!-- Theorem 1 (已解锁，可跳转) -->
+            <div class="theorem-card" data-href="theorems/theorem1.html">
+                <div class="card-icon">
+                    <i class="fas fa-circle-notch"></i>
+                </div>
+                <h3>Circle Theorem 1</h3>
+                <p class="theorem-subtitle">Angle at the Centre</p>
+                <p class="theorem-desc">The angle subtended at the centre is twice the angle at the circumference.</p>
+                <button class="btn btn-outline btn-sm card-btn">
+                    Enter Playground <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Theorem 2 已解锁 -->
+            <div class="theorem-card" data-href="theorems/theorem2.html">
+                <div class="card-icon">
+                    <i class="fas fa-square"></i>
+                </div>
+                <h3>Circle Theorem 2</h3>
+                <p class="theorem-subtitle">Angles in a Semicircle</p>
+                <p class="theorem-desc">The angle subtended by a diameter at the circumference is always 90°.</p>
+                <button class="btn btn-outline btn-sm card-btn">
+                    Enter Playground <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Theorem 3 已解锁 -->
+            <div class="theorem-card" data-href="theorems/theorem3.html">
+                <div class="card-icon">
+                    <i class="fas fa-equals"></i>
+                </div>
+                <h3>Circle Theorem 3</h3>
+                <p class="theorem-subtitle">Angles in the Same Segment</p>
+                <p class="theorem-desc">Angles subtended by the same chord in the same segment are equal.</p>
+                <button class="btn btn-outline btn-sm card-btn">
+                    Enter Playground <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Theorem 4 已解锁 -->
+            <div class="theorem-card" data-href="theorems/theorem4.html">
+                <div class="card-icon">
+                    <i class="fas fa-shapes"></i>
+                </div>
+                <h3>Circle Theorem 4</h3>
+                <p class="theorem-subtitle">Cyclic Quadrilateral</p>
+                <p class="theorem-desc">Opposite angles of a cyclic quadrilateral sum to 180°.</p>
+                <button class="btn btn-outline btn-sm card-btn">
+                    Enter Playground <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Theorem 5 已解锁 -->
+            <div class="theorem-card" data-href="theorems/theorem5.html">
+                <div class="card-icon">
+                    <i class="fas fa-perpendicular"></i>
+                </div>
+                <h3>Circle Theorem 5</h3>
+                <p class="theorem-subtitle">Radius to a Tangent</p>
+                <p class="theorem-desc">A radius is perpendicular to the tangent at the point of contact.</p>
+                <button class="btn btn-outline btn-sm card-btn">
+                    Enter Playground <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Theorem 6 已解锁 -->
+            <div class="theorem-card" data-href="theorems/theorem6.html">
+                <div class="card-icon">
+                    <i class="fas fa-ruler-combined"></i>
+                </div>
+                <h3>Circle Theorem 6</h3>
+                <p class="theorem-subtitle">Tangents from a Point I</p>
+                <p class="theorem-desc">Tangents drawn from the same external point to a circle are equal in length.</p>
+                <button class="btn btn-outline btn-sm card-btn">
+                    Enter Playground <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Theorem 7 已解锁 -->
+            <div class="theorem-card" data-href="theorems/theorem7.html">
+                <div class="card-icon">
+                    <i class="fas fa-ruler"></i>
+                </div>
+                <h3>Circle Theorem 7</h3>
+                <p class="theorem-subtitle">Tangents from a Point II</p>
+                <p class="theorem-desc">The line from the external point to the centre bisects the angle between the tangents.</p>
+                <button class="btn btn-outline btn-sm card-btn">
+                    Enter Playground <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Theorem 8 已解锁 -->
+            <div class="theorem-card" data-href="theorems/theorem8.html">
+                <div class="card-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <h3>Circle Theorem 8</h3>
+                <p class="theorem-subtitle">Alternate Segment Theorem</p>
+                <p class="theorem-desc">The angle between tangent and chord is equal to the angle in the alternate segment.</p>
+                <button class="btn btn-outline btn-sm card-btn">
+                    Enter Playground <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 复用舍友的页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Circle Planet</h4>
+                <p>Interactive Circle Theorem Learning Platform</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="game.html">Game</a></li>
+                    <li><a href="quiz.html">Quiz</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
+                    <li><a href="cookies.html">Cookie Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Accessibility</h4>
+                <ul>
+                    <li><i class="fas fa-eye"></i> Colour-blind Friendly</li>
+                    <li><i class="fas fa-text-height"></i> Adjustable Font</li>
+                    <li><i class="fas fa-moon"></i> Dark Mode</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Circle Planet. All rights reserved.</p>
+            <p class="footer-features">
+                <span class="feature-tag">🎨 Colour-blind Friendly</span>
+                <span class="feature-tag">📱 Mobile Responsive</span>
+                <span class="feature-tag">🌐 Bilingual Support</span>
+                <span class="feature-tag">🌙 Dark Mode</span>
+            </p>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- 复用舍友的全局脚本，深色模式/字体大小等功能完全正常 -->
+    <script src="script.js"></script>
+    <!-- Game主页面极简脚本 -->
+    <script src="game.js"></script>
+</body>
+</html>

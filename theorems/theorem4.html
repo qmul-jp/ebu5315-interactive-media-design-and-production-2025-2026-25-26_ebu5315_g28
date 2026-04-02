@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circle Theorem 4 | Cyclic Quadrilateral</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theorem4.css">
+</head>
+
+<body>
+    <div class="loader" id="loader">
+        <div class="loader-circle"></div>
+        <p class="loader-text">Loading Playground...</p>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='../index.html'">
+            <div class="logo-circle"><i class="fas fa-circle"></i></div>
+            <span class="logo-text">Circle Planet</span>
+        </div>
+        <div class="main-nav">
+            <a href="../index.html" class="nav-link">Home</a>
+            <a href="../game.html" class="nav-link active">Game</a>
+            <a href="../quiz.html" class="nav-link">Quiz</a>
+        </div>
+        <div class="function-buttons">
+            <button class="btn btn-outline btn-sm" id="langBtn"><i class="fas fa-language"></i> <span>EN</span></button>
+            <div class="font-controls">
+                <button class="font-btn" id="fontS">A-</button>
+                <button class="font-btn active" id="fontM">A</button>
+                <button class="font-btn" id="fontL">A+</button>
+            </div>
+            <button class="btn btn-sm theme-toggle" id="themeBtn"><i class="fas fa-moon"></i></button>
+            <button class="btn btn-primary btn-sm" onclick="window.location.href='../index.html'"><i class="fas fa-home"></i></button>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../index.html" class="mobile-nav-link">Home</a>
+        <a href="../game.html" class="mobile-nav-link">Game</a>
+        <a href="../quiz.html" class="mobile-nav-link">Quiz</a>
+    </div>
+
+    <div class="breadcrumb">
+        <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+        <span class="breadcrumb-separator">/</span>
+        <a href="../game.html">Interactive Theorems</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Cyclic Quadrilateral</span>
+    </div>
+
+    <div class="container">
+        <div class="detail-header">
+            <button class="btn btn-outline btn-sm" onclick="window.location.href='../game.html'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h2 class="detail-title">Circle Theorem 4: Cyclic Quadrilateral</h2>
+        </div>
+
+        <div class="theorem-info-panel">
+            <div class="info-card">
+                <h3><i class="fas fa-lightbulb"></i> How to Explore</h3>
+                <ul>
+                    <li>Drag all 4 points (A, B, C, D) anywhere on the circle.</li>
+                    <li>Observe: <span class="formula">∠A + ∠C = 180°</span> and <span class="formula">∠B + ∠D = 180°</span>.</li>
+                    <li>The sum of opposite angles is always 180 degrees.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="interactive-container">
+            <div class="canvas-wrapper">
+                <svg id="theoremSvg" viewBox="0 0 600 600" class="theorem-svg-interactive">
+                    <!-- 主圆 -->
+                    <circle id="mainCircle" cx="300" cy="300" r="200" fill="none" stroke="var(--primary)" stroke-width="3"/>
+                    
+                    <!-- 四边形边 -->
+                    <line id="lineAB" stroke="var(--primary)" stroke-width="2"/>
+                    <line id="lineBC" stroke="var(--primary)" stroke-width="2"/>
+                    <line id="lineCD" stroke="var(--primary)" stroke-width="2"/>
+                    <line id="lineDA" stroke="var(--primary)" stroke-width="2"/>
+                    
+                    <!-- 角度弧 -->
+                    <path id="arcA" fill="none" stroke="#f39c12" stroke-width="4"/>
+                    <path id="arcB" fill="none" stroke="#27ae60" stroke-width="4"/>
+                    <path id="arcC" fill="none" stroke="#f39c12" stroke-width="4"/>
+                    <path id="arcD" fill="none" stroke="#27ae60" stroke-width="4"/>
+                    
+                    <!-- 圆心 O -->
+                    <circle id="pointO" cx="300" cy="300" r="8" fill="var(--secondary)"/>
+                    <text x="310" y="295" fill="var(--secondary)" font-weight="700" font-size="18">O</text>
+                    
+                    <!-- 可拖拽点 A, B, C, D -->
+                    <circle id="pointA" cx="150" cy="150" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
+                    <text id="labelA" x="135" y="140" fill="var(--dark)" font-weight="700" font-size="18">A</text>
+
+                    <circle id="pointB" cx="450" cy="150" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
+                    <text id="labelB" x="465" y="140" fill="var(--dark)" font-weight="700" font-size="18">B</text>
+                    
+                    <circle id="pointC" cx="450" cy="450" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
+                    <text id="labelC" x="465" y="465" fill="var(--dark)" font-weight="700" font-size="18">C</text>
+                    
+                    <circle id="pointD" cx="150" cy="450" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
+                    <text id="labelD" x="135" y="465" fill="var(--dark)" font-weight="700" font-size="18">D</text>
+                </svg>
+            </div>
+
+            <div class="data-panel">
+                <div class="data-row">
+                    <div class="data-card data-a">
+                        <div class="data-label">Angle ∠A</div>
+                        <div class="data-value" id="angleA">0°</div>
+                    </div>
+                    <div class="data-relation">
+                        <i class="fas fa-plus fa-lg"></i>
+                    </div>
+                    <div class="data-card data-c">
+                        <div class="data-label">Angle ∠C</div>
+                        <div class="data-value" id="angleC">0°</div>
+                    </div>
+                    <div class="data-relation">
+                        <i class="fas fa-equals fa-lg"></i>
+                    </div>
+                    <div class="data-card data-sum">
+                        <div class="data-label">Sum (A + C)</div>
+                        <div class="data-value" id="sumAC">0°</div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <div class="data-card data-b">
+                        <div class="data-label">Angle ∠B</div>
+                        <div class="data-value" id="angleB">0°</div>
+                    </div>
+                    <div class="data-relation">
+                        <i class="fas fa-plus fa-lg"></i>
+                    </div>
+                    <div class="data-card data-d">
+                        <div class="data-label">Angle ∠D</div>
+                        <div class="data-value" id="angleD">0°</div>
+                    </div>
+                    <div class="data-relation">
+                        <i class="fas fa-equals fa-lg"></i>
+                    </div>
+                    <div class="data-card data-sum">
+                        <div class="data-label">Sum (B + D)</div>
+                        <div class="data-value" id="sumBD">0°</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- 复用全局页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Circle Planet</h4>
+                <p>Interactive Circle Theorem Learning Platform</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../game.html">Game</a></li>
+                    <li><a href="../quiz.html">Quiz</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="../privacy.html">Privacy Policy</a></li>
+                    <li><a href="../terms.html">Terms of Use</a></li>
+                    <li><a href="../cookies.html">Cookie Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Accessibility</h4>
+                <ul>
+                    <li><i class="fas fa-eye"></i> Colour-blind Friendly</li>
+                    <li><i class="fas fa-text-height"></i> Adjustable Font</li>
+                    <li><i class="fas fa-moon"></i> Dark Mode</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Circle Planet. All rights reserved.</p>
+            <p class="footer-features">
+                <span class="feature-tag">🎨 Colour-blind Friendly</span>
+                <span class="feature-tag">📱 Mobile Responsive</span>
+                <span class="feature-tag">🌐 Bilingual Support</span>
+                <span class="feature-tag">🌙 Dark Mode</span>
+            </p>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="theorem4.js"></script>
+</body>
+</html>
