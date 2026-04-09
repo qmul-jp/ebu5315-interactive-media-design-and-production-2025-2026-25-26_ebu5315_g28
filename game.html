@@ -4,22 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circle Planet | Interactive Theorems</title>
-    <!-- 复用舍友的全局资源，100%样式一致 -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <!-- Game主页面样式 -->
     <link rel="stylesheet" href="game.css">
+    <style>
+        /* 针对SVG图标的优化样式 */
+        .card-icon svg {
+            width: 80px;
+            height: 80px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform 0.3s ease;
+        }
+        .theorem-card:hover .card-icon svg {
+            transform: scale(1.1);
+        }
+        .geo-dot { fill: currentColor; stroke: none; }
+        .geo-angle { stroke-width: 1.5; opacity: 0.7; }
+    </style>
 </head>
 
 <body>
-    <!-- 复用舍友的加载动画 -->
     <div class="loader" id="loader">
         <div class="loader-circle"></div>
         <p class="loader-text">Loading Theorems...</p>
     </div>
 
-    <!-- 完全复用舍友的导航栏，功能100%兼容 -->
     <nav class="navbar">
         <div class="logo" onclick="window.location.href='index.html'">
             <div class="logo-circle">
@@ -69,7 +83,6 @@
     </div>
 
     <div class="container">
-        <!-- 标题区 -->
         <div class="game-hero">
             <div class="hero-badge">
                 <i class="fas fa-hand-pointer"></i> Drag & Explore
@@ -84,115 +97,114 @@
             </p>
         </div>
 
-        <!-- 8个定理卡片网格 -->
         <div class="theorems-grid">
-            <!-- Theorem 1 (已解锁，可跳转) -->
+            
             <div class="theorem-card" data-href="theorems/theorem1.html">
                 <div class="card-icon">
-                    <i class="fas fa-circle-notch"></i>
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" />
+                        <path d="M20 75 L50 50 L80 75" /> <path d="M20 75 L50 15 L80 75" stroke-dasharray="2 2" /> <circle cx="50" cy="50" r="2" class="geo-dot" />
+                    </svg>
                 </div>
                 <h3>Circle Theorem 1</h3>
                 <p class="theorem-subtitle">Angle at the Centre</p>
                 <p class="theorem-desc">The angle subtended at the centre is twice the angle at the circumference.</p>
-                <button class="btn btn-outline btn-sm card-btn">
-                    Enter Playground <i class="fas fa-arrow-right"></i>
-                </button>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
             </div>
 
-            <!-- Theorem 2 已解锁 -->
             <div class="theorem-card" data-href="theorems/theorem2.html">
                 <div class="card-icon">
-                    <i class="fas fa-square"></i>
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" />
+                        <line x1="10" y1="50" x2="90" y2="50" /> <path d="M10 50 L50 10 L90 50" /> <rect x="47" y="15" width="6" height="6" transform="rotate(45 50 10)" stroke-width="1"/>
+                    </svg>
                 </div>
                 <h3>Circle Theorem 2</h3>
                 <p class="theorem-subtitle">Angles in a Semicircle</p>
                 <p class="theorem-desc">The angle subtended by a diameter at the circumference is always 90°.</p>
-                <button class="btn btn-outline btn-sm card-btn">
-                    Enter Playground <i class="fas fa-arrow-right"></i>
-                </button>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
             </div>
 
-            <!-- Theorem 3 已解锁 -->
             <div class="theorem-card" data-href="theorems/theorem3.html">
                 <div class="card-icon">
-                    <i class="fas fa-equals"></i>
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" />
+                        <path d="M20 80 L40 12 L80 80" /> <path d="M20 80 L65 15 L80 80" stroke-opacity="0.5" /> <line x1="20" y1="80" x2="80" y2="80" stroke-dasharray="3 3"/> </svg>
                 </div>
                 <h3>Circle Theorem 3</h3>
                 <p class="theorem-subtitle">Angles in the Same Segment</p>
                 <p class="theorem-desc">Angles subtended by the same chord in the same segment are equal.</p>
-                <button class="btn btn-outline btn-sm card-btn">
-                    Enter Playground <i class="fas fa-arrow-right"></i>
-                </button>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
             </div>
 
-            <!-- Theorem 4 已解锁 -->
             <div class="theorem-card" data-href="theorems/theorem4.html">
                 <div class="card-icon">
-                    <i class="fas fa-shapes"></i>
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" />
+                        <path d="M30 20 L75 30 L85 70 L20 80 Z" /> </svg>
                 </div>
                 <h3>Circle Theorem 4</h3>
                 <p class="theorem-subtitle">Cyclic Quadrilateral</p>
                 <p class="theorem-desc">Opposite angles of a cyclic quadrilateral sum to 180°.</p>
-                <button class="btn btn-outline btn-sm card-btn">
-                    Enter Playground <i class="fas fa-arrow-right"></i>
-                </button>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
             </div>
 
-            <!-- Theorem 5 已解锁 -->
             <div class="theorem-card" data-href="theorems/theorem5.html">
                 <div class="card-icon">
-                    <i class="fas fa-perpendicular"></i>
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="40" r="30" />
+                        <line x1="50" y1="40" x2="50" y2="70" /> <line x1="10" y1="70" x2="90" y2="70" /> <rect x="50" y="64" width="6" height="6" stroke-width="1"/>
+                        <circle cx="50" cy="40" r="2" class="geo-dot" />
+                    </svg>
                 </div>
                 <h3>Circle Theorem 5</h3>
                 <p class="theorem-subtitle">Radius to a Tangent</p>
                 <p class="theorem-desc">A radius is perpendicular to the tangent at the point of contact.</p>
-                <button class="btn btn-outline btn-sm card-btn">
-                    Enter Playground <i class="fas fa-arrow-right"></i>
-                </button>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
             </div>
 
-            <!-- Theorem 6 已解锁 -->
             <div class="theorem-card" data-href="theorems/theorem6.html">
                 <div class="card-icon">
-                    <i class="fas fa-ruler-combined"></i>
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="40" cy="50" r="25" />
+                        <path d="M85 50 L58 32" /> <path d="M85 50 L58 68" /> <circle cx="85" cy="50" r="2" class="geo-dot" />
+                    </svg>
                 </div>
                 <h3>Circle Theorem 6</h3>
                 <p class="theorem-subtitle">Tangents from a Point I</p>
                 <p class="theorem-desc">Tangents drawn from the same external point to a circle are equal in length.</p>
-                <button class="btn btn-outline btn-sm card-btn">
-                    Enter Playground <i class="fas fa-arrow-right"></i>
-                </button>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
             </div>
 
-            <!-- Theorem 7 已解锁 -->
             <div class="theorem-card" data-href="theorems/theorem7.html">
                 <div class="card-icon">
-                    <i class="fas fa-ruler"></i>
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="40" cy="50" r="25" />
+                        <line x1="85" y1="50" x2="40" y2="50" stroke-dasharray="3 3" /> <path d="M85 50 L58 32" /> 
+                        <path d="M85 50 L58 68" />
+                        <circle cx="40" cy="50" r="2" class="geo-dot" />
+                    </svg>
                 </div>
                 <h3>Circle Theorem 7</h3>
                 <p class="theorem-subtitle">Tangents from a Point II</p>
                 <p class="theorem-desc">The line from the external point to the centre bisects the angle between the tangents.</p>
-                <button class="btn btn-outline btn-sm card-btn">
-                    Enter Playground <i class="fas fa-arrow-right"></i>
-                </button>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
             </div>
 
-            <!-- Theorem 8 已解锁 -->
             <div class="theorem-card" data-href="theorems/theorem8.html">
                 <div class="card-icon">
-                    <i class="fas fa-exchange-alt"></i>
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="40" r="35" />
+                        <line x1="10" y1="75" x2="90" y2="75" /> <path d="M50 75 L20 25 L80 50 Z" /> </svg>
                 </div>
                 <h3>Circle Theorem 8</h3>
                 <p class="theorem-subtitle">Alternate Segment Theorem</p>
                 <p class="theorem-desc">The angle between tangent and chord is equal to the angle in the alternate segment.</p>
-                <button class="btn btn-outline btn-sm card-btn">
-                    Enter Playground <i class="fas fa-arrow-right"></i>
-                </button>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
     </div>
 
-    <!-- 复用舍友的页脚 -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
@@ -239,9 +251,7 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- 复用舍友的全局脚本，深色模式/字体大小等功能完全正常 -->
     <script src="script.js"></script>
-    <!-- Game主页面极简脚本 -->
     <script src="game.js"></script>
 </body>
 </html>
