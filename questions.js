@@ -9,7 +9,7 @@ options:["half","equal to","twice","three times"],
 answer:"twice",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="150" y1="150" x2="230" y2="80" stroke="#f59e0b" stroke-width="3"/>
+<line x1="150" y1="150" x2="230"  y2="80" stroke="#f59e0b" stroke-width="3"/>
 <line x1="150" y1="150" x2="70" y2="80" stroke="#f59e0b" stroke-width="3"/>
 </svg>`
 },

@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz | Circle Planet</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="quiz.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- 导航栏（完全复用主页） -->
+    <!-- 导航栏 -->
     <nav class="navbar">
         <div class="logo" onclick="window.location.href='index.html'">
             <div class="logo-circle">
@@ -45,9 +44,9 @@
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
-        <a href="index.html" class="mobile-nav-link">Home</a>
-        <a href="game.html" class="mobile-nav-link">Game</a>
-        <a href="quiz.html" class="mobile-nav-link">Quiz</a>
+        <a href="index.html" class="mobile-nav-link"><i class="fas fa-chevron-right"></i> Home</a>
+        <a href="game.html" class="mobile-nav-link"><i class="fas fa-chevron-right"></i> Game</a>
+        <a href="quiz.html" class="mobile-nav-link active"><i class="fas fa-chevron-right"></i> Quiz</a>
     </div>
 
     <!-- 面包屑 -->
@@ -64,87 +63,169 @@
             <p class="quiz-subtitle">Test your geometry skills with interactive challenges</p>
         </section>
 
-        <!-- 难度选择区（Pre-Quiz） -->
+        <!-- 难度选择区 -->
         <section class="quiz-selection" id="quizSelection">
-  <!-- 找到这行，加 id="challenge-title" -->
             <h2 id="challenge-title">Choose your challenge</h2>
-            <div class="quiz-grid">
-                <!-- 题目卡片 -->
-                <div class="quiz-grid">
+            <div class="quiz-card">
+                <div class="quiz-icon"><i class="fas fa-circle-notch"></i></div>
+                <h3>Circle Theorem Challenge</h3>
 
-    <!-- 只保留这一个卡片，其他 5 个全部删除 -->
-<div class="quiz-card">
-    <div class="quiz-icon"><i class="fas fa-circle-notch"></i></div>
-    <h3>Circle Theorem Challenge</h3>
-    
-    <!-- 难度选择区：可点击、保持选中 -->
-    <div class="difficulty">
-        <button class="diff-btn" data-level="easy">Easy</button>
-        <button class="diff-btn" data-level="medium">Medium</button>
-        <button class="diff-btn" data-level="hard">Hard</button>
-    </div>
+                <!-- 难度选择区 -->
+                <div class="difficulty">
+                    <button class="diff-btn" data-level="easy">
+                        <i class="fas fa-seedling"></i> Easy
+                    </button>
+                    <button class="diff-btn" data-level="medium">
+                        <i class="fas fa-fire"></i> Medium
+                    </button>
+                    <button class="diff-btn" data-level="hard">
+                        <i class="fas fa-crown"></i> Hard
+                    </button>
+                </div>
 
-    <!-- Start按钮：必须选难度后才能点（可选，也可以直接点） -->
-    <button class="btn btn-primary start-quiz" id="startQuizBtn" disabled>Enter Quiz</button>
-</div>
+                <!-- 难度说明 -->
+                <div class="difficulty-info" id="difficultyInfo">
+                    <p>Select a difficulty level to begin</p>
+                </div>
 
-</div>
+                <!-- 开始按钮 -->
+                <button class="btn btn-primary start-quiz" id="startQuizBtn" disabled>
+                    <i class="fas fa-play"></i> Enter Quiz
+                </button>
+            </div>
         </section>
 
-        <!-- 答题区（默认隐藏） -->
+        <!-- 答题区 -->
         <section class="quiz-game" id="quizGame" style="display: none;">
             <div class="quiz-progress">
-                <span id="stepText">Step 1 of 10</span>
-                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <div class="progress-info">
+                    <span id="stepText">Step 1 of 5</span>
+                    <span class="score-display">
+                        <i class="fas fa-star"></i> <span id="currentScore">0</span>
+                    </span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="progress-glow"></div>
+                </div>
             </div>
 
-            <div class="quiz-canvas-wrapper">
-                <svg viewBox="0 0 300 300" class="quiz-svg" id="quizSvg">
-                    <circle cx="150" cy="150" r="120" fill="none" stroke="var(--primary)" stroke-width="2"/>
-                    <circle cx="150" cy="150" r="4" fill="var(--accent)"/>
-                    <line x1="150" y1="150" x2="240" y2="90" stroke="var(--secondary)" stroke-width="2"/>
-                    <line x1="150" y1="150" x2="60" y2="90" stroke="var(--secondary)" stroke-width="2"/>
-                    <line x1="240" y1="90" x2="150" y2="240" stroke="var(--primary)" stroke-width="2"/>
-                    <line x1="60" y1="90" x2="150" y2="240" stroke="var(--primary)" stroke-width="2"/>
-                </svg>
+            <!-- 计时器 -->
+            <div class="timer-container">
+                <div class="timer" id="timer">
+                    <i class="fas fa-clock"></i>
+                    <span id="timerText">30</span>
+                </div>
+                <div class="timer-bar">
+                    <div class="timer-fill" id="timerFill"></div>
+                </div>
             </div>
 
-            <div class="quiz-question">
-                <h3 id="questionText">What is the measure of angle ABC if arc AC is 60 degrees?</h3>
+            <!-- 动画容器 -->
+            <div class="question-animation-container" id="questionContainer">
+                <div class="quiz-canvas-wrapper">
+                    <svg viewBox="0 0 300 300" class="quiz-svg" id="quizSvg">
+                        <circle cx="150" cy="150" r="120" fill="none" stroke="var(--primary)" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="4" fill="var(--accent)"/>
+                        <line x1="150" y1="150" x2="240" y2="90" stroke="var(--secondary)" stroke-width="2"/>
+                        <line x1="150" y1="150" x2="60" y2="90" stroke="var(--secondary)" stroke-width="2"/>
+                        <line x1="240" y1="90" x2="150" y2="240" stroke="var(--primary)" stroke-width="2"/>
+                        <line x1="60" y1="90" x2="150" y2="240" stroke="var(--primary)" stroke-width="2"/>
+                    </svg>
+                </div>
+
+                <div class="quiz-question">
+                    <h3 id="questionText">What is the measure of angle ABC if arc AC is 60 degrees?</h3>
+                </div>
+
+                <div class="quiz-options" id="quizOptions">
+                    <button class="option-btn" data-answer="A">
+                        <span class="option-letter">A</span>
+                        <span class="option-text">Option A</span>
+                    </button>
+                    <button class="option-btn" data-answer="B">
+                        <span class="option-letter">B</span>
+                        <span class="option-text">Option B</span>
+                    </button>
+                    <button class="option-btn" data-answer="C">
+                        <span class="option-letter">C</span>
+                        <span class="option-text">Option C</span>
+                    </button>
+                    <button class="option-btn" data-answer="D">
+                        <span class="option-letter">D</span>
+<span class="option-text">Option D</span>
+                    </button>
+                </div>
             </div>
 
-            <div class="quiz-options" id="quizOptions">
-                <button class="option-btn" data-answer="A">Option A</button>
-                <button class="option-btn" data-answer="B">Option B</button>
-                <button class="option-btn" data-answer="C">Option C</button>
-                <button class="option-btn" data-answer="D">Option D</button>
+            <!-- 答题反馈 -->
+            <div class="answer-feedback" id="answerFeedback" style="display: none;">
+                <div class="feedback-icon" id="feedbackIcon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <p class="feedback-text" id="feedbackText">Correct!</p>
             </div>
 
             <div class="quiz-actions">
-                <button class="btn btn-outline" id="prevBtn">Previous</button>
-                <button class="btn btn-primary" id="checkBtn">Check Answer</button>
-                <button class="btn btn-outline" id="nextBtn">Next</button>
+                <button class="btn btn-outline" id="prevBtn">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="btn btn-primary" id="checkBtn">
+                    <i class="fas fa-check"></i> Check Answer
+                </button>
+                <button class="btn btn-outline" id="nextBtn">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
         </section>
 
-        <!-- 结果页（默认隐藏） -->
+        <!-- 结果页 -->
         <section class="quiz-result" id="quizResult" style="display: none;">
             <div class="result-card">
+                <div class="result-animation">
+                    <div class="result-icon" id="resultIcon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="confetti-container" id="confettiContainer"></div>
+                </div>
                 <h2 id="resultScore">8/10 Correct!</h2>
-                <div class="result-review">
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span id="correctCount">0</span> Correct
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-times-circle"></i>
+                        <span id="wrongCount">0</span> Wrong
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <span id="avgTime">0s</span> Avg Time
+                    </div>
+                </div>
+                <div class="result-review" id="resultReview">
                     <p>Tangent Theorem: Mastered</p>
                     <p>Secant Theorem: Needs Practice</p>
                 </div>
                 <div class="result-buttons">
-                    <button class="btn btn-outline" id="reviewBtn">Review Mistakes</button>
-                    <button class="btn btn-primary" id="restartBtn">Try Again</button>
-                    <button class="btn btn-outline" id="backBtn">Return to Hub</button>
+                    <button class="btn btn-outline" id="reviewBtn">
+                        <i class="fas fa-redo"></i> Review Mistakes
+                    </button>
+                    <button class="btn btn-primary" id="restartBtn">
+                        <i class="fas fa-sync-alt"></i> Try Again
+                    </button>
+                    <button class="btn btn-outline" id="backBtn">
+                        <i class="fas fa-home"></i> Return to Hub
+                    </button>
                 </div>
             </div>
         </section>
     </div>
 
-    <!-- 页脚（完全复用主页） -->
+    <!-- 庆祝动画容器 -->
+    <div class="celebration-container" id="celebrationContainer"></div>
+
+    <!-- 页脚 -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
@@ -179,10 +260,10 @@
         <div class="footer-bottom">
             <p>© 2026 Circle Planet. All rights reserved.</p>
             <p class="footer-features">
-                <span class="feature-tag">🎨 Colour-blind Friendly</span>
-                <span class="feature-tag">📱 Mobile Responsive</span>
-                <span class="feature-tag">🌐 Bilingual Support</span>
-                <span class="feature-tag">🌙 Dark Mode</span>
+                <span class="feature-tag">Colour-blind Friendly</span>
+                <span class="feature-tag">Mobile Responsive</span>
+                <span class="feature-tag">Bilingual Support</span>
+                <span class="feature-tag">Dark Mode</span>
             </p>
         </div>
     </footer>
@@ -191,8 +272,193 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <script src="script.js"></script>
-    <script src="questions.js"></script>
     <script src="quiz.js"></script>
+
+<style>
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.inland-security-footer {
+  position: fixed;
+  z-index: 10;
+  bottom: 0;
+  right: 0;
+  width: fit-content;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tooltip-container {
+  position: relative;
+}
+
+.trigger-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background-color: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.minimax-link {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 300;
+  color: #adadad;
+  text-decoration: none;
+}
+
+.minimax-link:visited {
+  color: #adadad;
+}
+
+.minimax-link:hover {
+  color: #666666;
+}
+
+.tooltip-content {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  padding-bottom: 16px; /* 8px 内容间距 + 8px 用于鼠标移动的透明区域 */
+  font-size: 12px;
+  line-height: 17px;
+  background-color: #fafafa;
+  border-radius: 12px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  color: #171717;
+}
+
+/* 创建透明的连接区域，让鼠标可以平滑移动到 tooltip */
+.tooltip-content::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 16px;
+}
+
+.tooltip-container:hover .tooltip-content {
+  display: flex;
+}
+
+.info-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.beian-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #171717;
+}
+
+.beian-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 2px;
+}
+
+.underline-text {
+  color: #171717;
+  text-decoration: underline;
+}
+
+.underline-text:hover {
+  color: #000000;
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .trigger-content {
+    background-color: transparent;
+  }
+
+  .minimax-link,
+  .minimax-link:visited {
+    color: #666666;
+  }
+
+  .minimax-link:hover {
+    color: #adadad;
+  }
+
+  .tooltip-content {
+    background-color: #262626;
+    color: #ededed;
+  }
+
+  .beian-link,
+  .underline-text {
+    color: #ededed;
+  }
+
+  .underline-text:hover {
+    color: #ffffff;
+  }
+}
+
+</style>
+<div class="inland-security-footer">
+  <div class="tooltip-container">
+    <div class="trigger-content">
+      <a href="https://www.minimaxi.com/" target="_blank" rel="noreferrer" class="minimax-link">
+        <span>© 2026 MiniMax</span>
+      </a>
+    </div>
+    <div class="tooltip-content">
+      <section class="info-section">
+        <span>上海稀宇科技有限公司</span>
+      </section>
+
+      <section class="info-section">
+        <a class="beian-link" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010402010179" target="_blank" rel="noreferrer">
+          <img alt="hailuo-beian-icon" src="https://cdn.hailuoai.com/hailuo-video-web/public_assets/223037d3-79fd-4db0-a456-749f38a6a14b.png" class="beian-icon">
+          <span class="underline-text">沪公网安备31010402010179号</span>
+        </a>
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer" class="underline-text">
+          沪ICP备2023003282号-38
+        </a>
+      </section>
+
+      <section class="info-section">
+        <span>模型名称：MiniMax</span>
+        <span>备案号：Shanghai-MiniMax-202505230046</span>
+      </section>
+
+      <section class="info-section">
+        <a href="https://agent.minimaxi.com/doc/zh/terms-of-service.html" target="_blank" rel="noreferrer" class="underline-text">
+          用户协议
+        </a>
+        <a href="https://agent.minimaxi.com/doc/zh/privacy-policy.html" target="_blank" rel="noreferrer" class="underline-text">
+          隐私政策
+        </a>
+      </section>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
