@@ -243,6 +243,19 @@ button {
     border: 1px solid var(--glass-border);
 }
 
+/* 音效切换 */
+.sound-toggle {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    transition: var(--transition);
+}
+
+.sound-toggle:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
 /* 移动端菜单 */
 .mobile-menu-btn {
     display: none;
