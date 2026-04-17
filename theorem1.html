@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circle Theorem 1 | Angle at the Centre</title>
+    <!-- 复用全局资源，样式/功能100%一致 -->
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- 定理1专属样式 -->
+    <link rel="stylesheet" href="theorem1.css">
+</head>
+
+<body>
+    <!-- 加载动画 -->
+    <div class="loader" id="loader">
+        <div class="loader-circle"></div>
+        <p class="loader-text">Loading Playground...</p>
+    </div>
+
+    <!-- 完全复用全局导航栏 -->
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='../index.html'">
+            <div class="logo-circle">
+                <i class="fas fa-circle"></i>
+            </div>
+            <span class="logo-text">Circle Planet</span>
+        </div>
+
+        <div class="main-nav">
+            <a href="../index.html" class="nav-link">Home</a>
+            <a href="../game.html" class="nav-link active">Game</a>
+            <a href="../quiz.html" class="nav-link">Quiz</a>
+        </div>
+
+        <div class="function-buttons">
+            <button class="btn btn-outline btn-sm" id="langBtn">
+                <i class="fas fa-language"></i> <span>EN</span>
+            </button>
+            <div class="font-controls">
+                <button class="font-btn" id="fontS">A-</button>
+                <button class="font-btn active" id="fontM">A</button>
+                <button class="font-btn" id="fontL">A+</button>
+            </div>
+            <button class="btn btn-sm theme-toggle" id="themeBtn">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="window.location.href='../index.html'">
+                <i class="fas fa-home"></i>
+            </button>
+        </div>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../index.html" class="mobile-nav-link">Home</a>
+        <a href="../game.html" class="mobile-nav-link">Game</a>
+        <a href="../quiz.html" class="mobile-nav-link">Quiz</a>
+    </div>
+
+    <!-- 面包屑导航 -->
+    <div class="breadcrumb">
+        <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+        <span class="breadcrumb-separator">/</span>
+        <a href="../game.html">Interactive Theorems</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Angle at the Centre</span>
+    </div>
+
+    <!-- 主内容区域 + 边栏布局 -->
+    <div class="theorem-layout">
+        <!-- 左侧主内容 -->
+        <div class="theorem-main-content">
+            <!-- 返回按钮+标题 -->
+            <div class="detail-header">
+                <button class="btn btn-outline btn-sm" onclick="window.location.href='../game.html'">
+                    <i class="fas fa-arrow-left"></i> Back to All Theorems
+                </button>
+                <h2 class="detail-title">Circle Theorem 1: Angle at the Centre</h2>
+            </div>
+
+            <!-- 定理说明区 -->
+            <div class="theorem-info-panel">
+                <div class="info-card">
+                    <h3><i class="fas fa-lightbulb"></i> How to Explore</h3>
+                    <ul>
+                        <li>Drag points <strong>A</strong>, <strong>B</strong>, and <strong>C</strong> around the circle.</li>
+                        <li>Watch how the angles change in real-time.</li>
+                        <li>Observe the fixed relationship: <span class="formula">∠AOB = 2 × ∠ACB</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 交互画布区 -->
+            <div class="interactive-container">
+                <div class="canvas-wrapper">
+                    <svg id="theoremSvg" viewBox="0 0 600 600" class="theorem-svg-interactive">
+                        <!-- 主圆 -->
+                        <circle id="mainCircle" cx="300" cy="300" r="200" fill="none" stroke="var(--primary)" stroke-width="3"/>
+
+                        <!-- 角度弧 -->
+                        <path id="arcCentre" fill="none" stroke="var(--secondary)" stroke-width="4"/>
+                        <path id="arcCircum" fill="none" stroke="var(--accent)" stroke-width="4"/>
+
+                        <!-- 连线 -->
+                        <line id="lineOA" stroke="var(--secondary)" stroke-width="2" stroke-dasharray="8,4"/>
+                        <line id="lineOB" stroke="var(--secondary)" stroke-width="2" stroke-dasharray="8,4"/>
+                        <line id="lineCA" stroke="var(--primary)" stroke-width="2"/>
+                        <line id="lineCB" stroke="var(--primary)" stroke-width="2"/>
+
+                        <!-- 圆心 O -->
+                        <circle id="pointO" cx="300" cy="300" r="8" fill="var(--secondary)"/>
+                        <text x="310" y="295" fill="var(--secondary)" font-weight="700" font-size="18">O</text>
+
+                        <!-- 圆周点 A (可拖拽) -->
+                        <circle id="pointA" cx="150" cy="200" r="14" fill="var(--accent)" stroke="white" stroke-width="3" style="cursor: move;"/>
+                        <text id="labelA" x="135" y="190" fill="var(--dark)" font-weight="700" font-size="18">A</text>
+
+                        <!-- 圆周点 B (可拖拽) -->
+                        <circle id="pointB" cx="450" cy="200" r="14" fill="var(--accent)" stroke="white" stroke-width="3" style="cursor: move;"/>
+                        <text id="labelB" x="460" y="190" fill="var(--dark)" font-weight="700" font-size="18">B</text>
+
+                        <!-- 圆周点 C (可拖拽) -->
+                        <circle id="pointC" cx="300" cy="480" r="14" fill="var(--primary)" stroke="white" stroke-width="3" style="cursor: move;"/>
+                        <text id="labelC" x="310" y="505" fill="var(--dark)" font-weight="700" font-size="18">C</text>
+                    </svg>
+                </div>
+
+                <!-- 实时数据面板 -->
+                <div class="data-panel">
+                    <div class="data-card data-central">
+                        <div class="data-label">Angle at Centre (∠AOB)</div>
+                        <div class="data-value" id="angleCentre">0°</div>
+                    </div>
+                    <div class="data-relation">
+                        <i class="fas fa-equals fa-2x"></i>
+                        <span class="relation-text">2 ×</span>
+                    </div>
+                    <div class="data-card data-circum">
+                        <div class="data-label">Angle at Circumference (∠ACB)</div>
+                        <div class="data-value" id="angleCircum">0°</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧边栏导航 -->
+        <aside class="theorem-sidebar" id="theoremSidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-th-large"></i> <span data-i18n="sidebar.title">Theorems</span></h3>
+                <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="sidebar-content">
+                <ul class="theorem-nav-list">
+                    <li class="theorem-nav-item active" data-theorem="1">
+                        <a href="theorem1.html">
+                            <span class="theorem-number">1</span>
+                            <span class="theorem-nav-title">Angle at the Centre</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-check-circle"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="2">
+                        <a href="theorem2.html">
+                            <span class="theorem-number">2</span>
+                            <span class="theorem-nav-title">Angles in a Semicircle</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="3">
+                        <a href="theorem3.html">
+                            <span class="theorem-number">3</span>
+                            <span class="theorem-nav-title">Angles in the Same Segment</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="4">
+                        <a href="theorem4.html">
+                            <span class="theorem-number">4</span>
+                            <span class="theorem-nav-title">Cyclic Quadrilateral</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="5">
+                        <a href="theorem5.html">
+                            <span class="theorem-number">5</span>
+                            <span class="theorem-nav-title">Radius to a Tangent</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="6">
+                        <a href="theorem6.html">
+                            <span class="theorem-number">6</span>
+                            <span class="theorem-nav-title">Tangents from a Point I</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="7">
+                        <a href="theorem7.html">
+                            <span class="theorem-number">7</span>
+                            <span class="theorem-nav-title">Tangents from a Point II</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="8">
+                        <a href="theorem8.html">
+                            <span class="theorem-number">8</span>
+                            <span class="theorem-nav-title">Alternate Segment Theorem</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="sidebar-footer">
+                    <a href="../game.html" class="sidebar-back-btn">
+                        <i class="fas fa-th"></i> All Theorems
+                    </a>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- 复用全局页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Circle Planet</h4>
+                <p>Interactive Circle Theorem Learning Platform</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../game.html">Game</a></li>
+                    <li><a href="../quiz.html">Quiz</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="../privacy.html">Privacy Policy</a></li>
+                    <li><a href="../terms.html">Terms of Use</a></li>
+                    <li><a href="../cookies.html">Cookie Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Accessibility</h4>
+                <ul>
+                    <li><i class="fas fa-eye"></i> Colour-blind Friendly</li>
+                    <li><i class="fas fa-text-height"></i> Adjustable Font</li>
+                    <li><i class="fas fa-moon"></i> Dark Mode</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Circle Planet. All rights reserved.</p>
+            <p class="footer-features">
+                <span class="feature-tag">Colour-blind Friendly</span>
+                <span class="feature-tag">Mobile Responsive</span>
+                <span class="feature-tag">Bilingual Support</span>
+                <span class="feature-tag">Dark Mode</span>
+            </p>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- 复用全局脚本，深色模式/字体大小等功能完全正常 -->
+    <script src="../script.js"></script>
+    <!-- 定理1专属交互逻辑 -->
+    <script src="theorem1.js"></script>
+</body>
