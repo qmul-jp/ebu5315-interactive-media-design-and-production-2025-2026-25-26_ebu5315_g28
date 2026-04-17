@@ -5,7 +5,205 @@ document.addEventListener('DOMContentLoaded', function () {
     initMobileMenu();
     initBackToTop();
     initQuiz();
+    initSound();
+    initSoundToggle();
 });
+
+// ========================================
+// 音效系统 - Web Audio API
+// ========================================
+let audioContext = null;
+let soundEnabled = true;
+
+// 音效开关功能
+function initSoundToggle() {
+    const soundBtn = document.getElementById('soundBtn');
+    // 从 localStorage 读取设置
+    soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+    updateSoundIcon();
+
+    soundBtn.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        localStorage.setItem('soundEnabled', soundEnabled);
+        updateSoundIcon();
+        if (soundEnabled) {
+            playSound('click'); // 开启时播放提示音
+        }
+    });
+}
+
+function updateSoundIcon() {
+    const soundBtn = document.getElementById('soundBtn');
+    const icon = soundBtn.querySelector('i');
+    if (soundEnabled) {
+        icon.className = 'fas fa-volume-up';
+    } else {
+        icon.className = 'fas fa-volume-mute';
+    }
+}
+
+function initSound() {
+    // 懒加载 AudioContext（用户交互后初始化）
+    document.addEventListener('click', function initAudio() {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }, { once: true });
+}
+
+// 播放音效函数
+function playSound(type) {
+    // 如果音效关闭，不播放任何音效
+    if (!soundEnabled) return;
+
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    const now = audioContext.currentTime;
+
+    switch(type) {
+        case 'select':
+            // 选项选择音效 - 短促的"滴"声
+            oscillator.frequency.setValueAtTime(600, now);
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.3, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            oscillator.start(now);
+            oscillator.stop(now + 0.1);
+            break;
+
+        case 'correct':
+            // 正确音效 - 上升的三和弦
+            oscillator.frequency.setValueAtTime(523, now); // C5
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.3, now);
+            oscillator.start(now);
+
+            setTimeout(() => {
+                const osc2 = audioContext.createOscillator();
+                const gain2 = audioContext.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioContext.destination);
+                osc2.frequency.setValueAtTime(659, now); // E5
+                osc2.type = 'sine';
+                gain2.gain.setValueAtTime(0.3, now);
+                gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc2.start(now);
+                osc2.stop(now + 0.15);
+            }, 100);
+
+            setTimeout(() => {
+                const osc3 = audioContext.createOscillator();
+                const gain3 = audioContext.createGain();
+                osc3.connect(gain3);
+                gain3.connect(audioContext.destination);
+                osc3.frequency.setValueAtTime(784, now); // G5
+                osc3.type = 'sine';
+                gain3.gain.setValueAtTime(0.3, now);
+                gain3.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc3.start(now);
+                osc3.stop(now + 0.3);
+            }, 200);
+
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            oscillator.stop(now + 0.1);
+            break;
+
+        case 'wrong':
+            // 错误音效 - 下降的低音
+            oscillator.frequency.setValueAtTime(200, now);
+            oscillator.frequency.exponentialRampToValueAtTime(100, now + 0.3);
+            oscillator.type = 'sawtooth';
+            gainNode.gain.setValueAtTime(0.2, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            oscillator.start(now);
+            oscillator.stop(now + 0.3);
+            break;
+
+        case 'tick':
+            // 计时器滴答声 - 仅在最后5秒
+            oscillator.frequency.setValueAtTime(440, now);
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.15, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+            oscillator.start(now);
+            oscillator.stop(now + 0.05);
+            break;
+
+        case 'timeout':
+            // 时间耗尽音效 - 长的下降音
+            oscillator.frequency.setValueAtTime(400, now);
+            oscillator.frequency.exponentialRampToValueAtTime(80, now + 0.8);
+            oscillator.type = 'triangle';
+            gainNode.gain.setValueAtTime(0.25, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+            oscillator.start(now);
+            oscillator.stop(now + 0.8);
+            break;
+
+        case 'start':
+            // 游戏开始音效 - 上升音
+            oscillator.frequency.setValueAtTime(300, now);
+            oscillator.frequency.exponentialRampToValueAtTime(600, now + 0.2);
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.3, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+            oscillator.start(now);
+            oscillator.stop(now + 0.25);
+            break;
+
+        case 'victory':
+            // 胜利/满分音效 - 欢快的旋律
+            const notes = [523, 659, 784, 1047]; // C5, E5, G5, C6
+            notes.forEach((freq, i) => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.setValueAtTime(freq, now + i * 0.15);
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.3, now + i * 0.15);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.15 + 0.3);
+                osc.start(now + i * 0.15);
+                osc.stop(now + i * 0.15 + 0.3);
+            });
+            return; // 提前返回，避免主oscillator播放
+
+        case 'complete':
+            // 测验完成音效
+            const completeNotes = [392, 440, 494, 523]; // G4, A4, B4, C5
+            completeNotes.forEach((freq, i) => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.setValueAtTime(freq, now + i * 0.12);
+                osc.type = 'triangle';
+                gain.gain.setValueAtTime(0.25, now + i * 0.12);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.12 + 0.25);
+                osc.start(now + i * 0.12);
+                osc.stop(now + i * 0.12 + 0.25);
+            });
+            return;
+
+        case 'click':
+            // 按钮点击音效
+            oscillator.frequency.setValueAtTime(500, now);
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.15, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+            oscillator.start(now);
+            oscillator.stop(now + 0.05);
+            break;
+    }
+}
 
 // 语言切换相关变量
 let currentLang = localStorage.getItem('lang') || 'en';
@@ -114,7 +312,8 @@ question_en:"The angle at the center of a circle is ____ the angle at the circum
 question_zh:"圆心角的度数是圆周角的____。",
 options_en:["half","equal to","twice","three times"],
 options_zh:["一半","相等","两倍","三倍"],
-answer:"twice",
+answer_en:"twice",
+answer_zh:"两倍",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="150" y1="150" x2="230" y2="80" stroke="#f59e0b" stroke-width="3"/>
@@ -128,7 +327,8 @@ question_en:"A line from the center to the circle is called a ____.",
 question_zh:"从圆心到圆上的连线叫做____。",
 options_en:["diameter","radius","chord","arc"],
 options_zh:["直径","半径","弦","弧"],
-answer:"radius",
+answer_en:"radius",
+answer_zh:"半径",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="150" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
@@ -141,7 +341,8 @@ question_en:"A line passing through the center and touching both sides of the ci
 question_zh:"经过圆心并与圆相交于两点的线段是____。",
 options_en:["radius","arc","diameter","tangent"],
 options_zh:["半径","弧","直径","切线"],
-answer:"diameter",
+answer_en:"diameter",
+answer_zh:"直径",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="50" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
@@ -154,7 +355,8 @@ question_en:"A line that touches the circle at exactly one point is called a ___
 question_zh:"只与圆相交于一点的直线叫做____。",
 options_en:["tangent","diameter","chord","radius"],
 options_zh:["切线","直径","弦","半径"],
-answer:"tangent",
+answer_en:"tangent",
+answer_zh:"切线",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="20" y1="250" x2="280" y2="250" stroke="#f59e0b" stroke-width="3"/>
@@ -167,7 +369,8 @@ question_en:"All radii of the same circle are ____.",
 question_zh:"同一个圆的所有半径都____。",
 options_en:["different","equal","random","curved"],
 options_zh:["不同","相等","随机","弯曲"],
-answer:"equal",
+answer_en:"equal",
+answer_zh:"相等",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="150" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
@@ -181,7 +384,8 @@ question_en:"A straight line joining two points on a circle is called a ____.",
 question_zh:"连接圆上两点的直线叫做____。",
 options_en:["chord","radius","tangent","arc"],
 options_zh:["弦","半径","切线","弧"],
-answer:"chord",
+answer_en:"chord",
+answer_zh:"弦",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="80" y1="80" x2="220" y2="80" stroke="#f59e0b" stroke-width="3"/>
@@ -194,7 +398,8 @@ question_en:"Half of a circle is called a ____.",
 question_zh:"圆的一半叫做____。",
 options_en:["arc","radius","semicircle","chord"],
 options_zh:["弧","半径","半圆","弦"],
-answer:"semicircle",
+answer_en:"semicircle",
+answer_zh:"半圆",
 svg:`<svg viewBox="0 0 300 300">
 <path d="M50 150 A100 100 0 0 1 250 150" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -206,7 +411,8 @@ question_en:"The distance around a circle is called ____.",
 question_zh:"圆一周的长度叫做____。",
 options_en:["diameter","area","circumference","radius"],
 options_zh:["直径","面积","周长","半径"],
-answer:"circumference",
+answer_en:"circumference",
+answer_zh:"周长",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#f59e0b" stroke-width="4" fill="none"/>
 </svg>`
@@ -218,7 +424,8 @@ question_en:"The center of a circle is the point ____.",
 question_zh:"圆心是____的点。",
 options_en:["on the edge","in the middle","outside","on a line"],
 options_zh:["在边上","在中间","在外面","在线上"],
-answer:"in the middle",
+answer_en:"in the middle",
+answer_zh:"在中间",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <circle cx="150" cy="150" r="6" fill="#4f46e5"/>
@@ -231,7 +438,8 @@ question_en:"Two radii form an angle at the ____.",
 question_zh:"两条半径在____形成角。",
 options_en:["edge","center","diameter","arc"],
 options_zh:["边上","圆心","直径","弧"],
-answer:"center",
+answer_en:"center",
+answer_zh:"圆心",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="150" y1="150" x2="230" y2="80" stroke="#f59e0b" stroke-width="3"/>
@@ -249,7 +457,8 @@ question_en:"Angles in the same segment of a circle are ____.",
 question_zh:"同弧所对的圆周角____。",
 options_en:["equal","double","random","half"],
 options_zh:["相等","两倍","随机","一半"],
-answer:"equal",
+answer_en:"equal",
+answer_zh:"相等",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="70" y1="80" x2="230" y2="80" stroke="#4f46e5" stroke-width="3"/>
@@ -262,7 +471,8 @@ question_en:"The angle in a semicircle is ____.",
 question_zh:"半圆所对的圆周角是____。",
 options_en:["45°","60°","90°","180°"],
 options_zh:["45°","60°","90°","180°"],
-answer:"90°",
+answer_en:"90°",
+answer_zh:"90°",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="50" y1="150" x2="250" y2="150" stroke="#4f46e5" stroke-width="3"/>
@@ -275,7 +485,8 @@ question_en:"A tangent is ____ to the radius at the point of contact.",
 question_zh:"切线在切点处____于半径。",
 options_en:["parallel","equal","perpendicular","random"],
 options_zh:["平行","相等","垂直","随机"],
-answer:"perpendicular",
+answer_en:"perpendicular",
+answer_zh:"垂直",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="150" y1="150" x2="250" y2="150" stroke="#4f46e5" stroke-width="3"/>
@@ -289,7 +500,8 @@ question_en:"Opposite angles of a cyclic quadrilateral sum to ____.",
 question_zh:"圆内接四边形的对角之和等于____。",
 options_en:["90°","180°","270°","360°"],
 options_zh:["90°","180°","270°","360°"],
-answer:"180°",
+answer_en:"180°",
+answer_zh:"180°",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -301,7 +513,8 @@ question_en:"Equal chords are ____ from the center.",
 question_zh:"相等的弦到圆心的距离____。",
 options_en:["nearer","equidistant","random","farther"],
 options_zh:["更近","相等","随机","更远"],
-answer:"equidistant",
+answer_en:"equidistant",
+answer_zh:"相等",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="80" y1="80" x2="220" y2="80" stroke="#f59e0b" stroke-width="3"/>
@@ -315,7 +528,8 @@ question_en:"The perpendicular from the center to a chord ____ the chord.",
 question_zh:"从圆心到弦的垂线____弦。",
 options_en:["bisects","touches","crosses","extends"],
 options_zh:["平分","接触","穿过","延长"],
-answer:"bisects",
+answer_en:"bisects",
+answer_zh:"平分",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="80" y1="100" x2="220" y2="100" stroke="#f59e0b" stroke-width="3"/>
@@ -328,7 +542,8 @@ question_en:"Angles subtended by the same arc are ____.",
 question_zh:"同弧所对的圆周角____。",
 options_en:["equal","double","random","half"],
 options_zh:["相等","两倍","随机","一半"],
-answer:"equal",
+answer_en:"equal",
+answer_zh:"相等",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -340,7 +555,8 @@ question_en:"The longest chord of a circle is the ____.",
 question_zh:"圆最长的弦是____。",
 options_en:["arc","radius","diameter","tangent"],
 options_zh:["弧","半径","直径","切线"],
-answer:"diameter",
+answer_en:"diameter",
+answer_zh:"直径",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="50" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
@@ -353,7 +569,8 @@ question_en:"A diameter divides the circle into ____ equal parts.",
 question_zh:"直径把圆分成____等份。",
 options_en:["1","2","3","4"],
 options_zh:["1","2","3","4"],
-answer:"2",
+answer_en:"2",
+answer_zh:"2",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="50" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
@@ -366,7 +583,8 @@ question_en:"The radius is ____ the diameter.",
 question_zh:"半径是直径的____。",
 options_en:["half of","equal to","twice","triple"],
 options_zh:["一半","相等","两倍","三倍"],
-answer:"half of",
+answer_en:"half of",
+answer_zh:"一半",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="150" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
@@ -383,7 +601,8 @@ question_en:"If the central angle is 120°, the angle at the circumference is __
 question_zh:"如果圆心角是120°，则圆周角是____。",
 options_en:["30°","60°","90°","120°"],
 options_zh:["30°","60°","90°","120°"],
-answer:"60°",
+answer_en:"60°",
+answer_zh:"60°",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -395,7 +614,8 @@ question_en:"Angles in the same segment are ____.",
 question_zh:"同弧所对的圆周角____。",
 options_en:["equal","double","random","opposite"],
 options_zh:["相等","两倍","随机","相反"],
-answer:"equal",
+answer_en:"equal",
+answer_zh:"相等",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -407,7 +627,8 @@ question_en:"If radius is 5, diameter is ____.",
 question_zh:"如果半径是5，则直径是____。",
 options_en:["5","8","10","12"],
 options_zh:["5","8","10","12"],
-answer:"10",
+answer_en:"10",
+answer_zh:"10",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="80" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -419,7 +640,8 @@ question_en:"The angle between tangent and radius is ____.",
 question_zh:"切线和半径之间的夹角是____。",
 options_en:["30°","60°","90°","120°"],
 options_zh:["30°","60°","90°","120°"],
-answer:"90°",
+answer_en:"90°",
+answer_zh:"90°",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -431,7 +653,8 @@ question_en:"The diameter is ____ the radius.",
 question_zh:"直径是半径的____。",
 options_en:["half","equal","twice","triple"],
 options_zh:["一半","相等","两倍","三倍"],
-answer:"twice",
+answer_en:"twice",
+answer_zh:"两倍",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -443,7 +666,8 @@ question_en:"The center of a circle is equidistant from all ____.",
 question_zh:"圆心到____的所有点的距离相等。",
 options_en:["points on the circle","lines","diameters","angles"],
 options_zh:["圆上的点","线","直径","角"],
-answer:"points on the circle",
+answer_en:"points on the circle",
+answer_zh:"圆上的点",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -455,7 +679,8 @@ question_en:"An arc is part of the ____.",
 question_zh:"弧是____的一部分。",
 options_en:["circle","radius","diameter","center"],
 options_zh:["圆","半径","直径","圆心"],
-answer:"circle",
+answer_en:"circle",
+answer_zh:"圆",
 svg:`<svg viewBox="0 0 300 300">
 <path d="M80 220 A100 100 0 0 1 220 220" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -467,7 +692,8 @@ question_en:"Two diameters always intersect at the ____.",
 question_zh:"两条直径总在____相交。",
 options_en:["edge","center","arc","random point"],
 options_zh:["边上","圆心","弧","随机点"],
-answer:"center",
+answer_en:"center",
+answer_zh:"圆心",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 <line x1="50" y1="150" x2="250" y2="150" stroke="#f59e0b"/>
@@ -481,7 +707,8 @@ question_en:"A tangent touches the circle at ____ point.",
 question_zh:"切线与圆相切于____点。",
 options_en:["one","two","three","four"],
 options_zh:["一","两","三","四"],
-answer:"one",
+answer_en:"one",
+answer_zh:"一",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -493,7 +720,8 @@ question_en:"If diameter is 20, radius is ____.",
 question_zh:"如果直径是20，则半径是____。",
 options_en:["5","10","15","20"],
 options_zh:["5","10","15","20"],
-answer:"10",
+answer_en:"10",
+answer_zh:"10",
 svg:`<svg viewBox="0 0 300 300">
 <circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
 </svg>`
@@ -548,6 +776,7 @@ function initQuiz() {
             optionBtn.classList.add('selected');
             const qid = currentQuestions[currentQuestionIndex].id;
             userAnswers[qid] = optionBtn.querySelector('.option-text').innerText;
+            playSound('select'); // 选项选择音效
         }
     });
 
@@ -557,14 +786,18 @@ function initQuiz() {
         stopTimer();
         questionTimes.push(timeLeft);
         const q = currentQuestions[currentQuestionIndex];
+        // 根据当前语言获取正确答案
+        const correctAnswer = currentLang === 'zh' ? q.answer_zh : q.answer_en;
+        const userAnswer = sel.querySelector('.option-text').innerText;
         const opts = document.querySelectorAll('.option-btn');
         opts.forEach(o => o.disabled = true);
         opts.forEach(o => {
-            if (o.querySelector('.option-text').innerText === q.answer) o.classList.add('correct');
+            if (o.querySelector('.option-text').innerText === correctAnswer) o.classList.add('correct');
             else if (o === sel) o.classList.add('wrong');
         });
-        const isCorrect = sel.querySelector('.option-text').innerText === q.answer;
+        const isCorrect = userAnswer === correctAnswer;
         showFeedback(isCorrect);
+        playSound(isCorrect ? 'correct' : 'wrong'); // 正确/错误音效
         if (isCorrect && !userAnswers[q.id + '_c']) { correctCount++; userAnswers[q.id + '_c'] = true; updateScore(); }
         checkBtn.disabled = true;
     });
@@ -644,6 +877,7 @@ function selectOption(index) {
         opts[index].classList.add('selected');
         const qid = currentQuestions[currentQuestionIndex].id;
         userAnswers[qid] = opts[index].querySelector('.option-text').innerText;
+        // 音效已在 quizOptions 事件中处理
     }
 }
 
@@ -663,6 +897,7 @@ function startQuizByLevel() {
     quizResult.style.display = 'none';
     quizGame.style.display = 'block';
     document.getElementById('quiz-top-header').style.display = 'none';
+    playSound('start'); // 游戏开始音效
     renderCurrentQuestion(true);
     startTimer();
 }
@@ -684,9 +919,14 @@ function startTimer() {
         const percent = (timeLeft / totalTime) * 100;
         timerFillEl.style.width = percent + '%';
         if (timeLeft <= 10 && timeLeft > 5) { timerEl.className = 'timer warning'; timerFillEl.className = 'timer-fill warning'; }
-        else if (timeLeft <= 5) { timerEl.className = 'timer danger'; timerFillEl.className = 'timer-fill danger'; }
+        else if (timeLeft <= 5 && timeLeft > 0) {
+            timerEl.className = 'timer danger';
+            timerFillEl.className = 'timer-fill danger';
+            playSound('tick'); // 最后5秒滴答声
+        }
         if (timeLeft <= 0) {
             stopTimer();
+            playSound('timeout'); // 时间耗尽音效
             const sel = document.querySelector('.option-btn.selected');
             if (!sel) { const opts = document.querySelectorAll('.option-btn'); if (opts.length > 0) opts[0].click(); }
             document.getElementById('checkBtn').click();
@@ -772,11 +1012,13 @@ function showResults() {
         resultIcon.innerHTML = '<i class="fas fa-trophy"></i>';
         resultCard.classList.add('perfect');
         triggerCelebration('big');
+        playSound('victory'); // 满分胜利音效
     } else if (correctCount >= 3) {
         resultReview.innerHTML = '<p>' + t('greatJob') + '</p><p>' + t('greatJobSub') + '</p>';
         resultIcon.innerHTML = '<i class="fas fa-thumbs-up"></i>';
         resultCard.classList.add('good');
         triggerCelebration('medium');
+        playSound('complete'); // 完成音效
     } else {
         resultReview.innerHTML = '<p>' + t('keepPracticing') + '</p><p>' + t('reviewMistakes') + '</p>';
         resultIcon.innerHTML = '<i class="fas fa-book"></i>';
