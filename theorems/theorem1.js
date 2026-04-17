@@ -1,6 +1,6 @@
 /* ========================================
    Theorem 1: Angle at the Centre - 专属交互逻辑
-   拖拽点、实时角度计算、图形更新
+   拖拽点、实时角度计算、图形更新、边栏导航
    ======================================== */
 
 // 状态变量
@@ -14,10 +14,239 @@ const svgConfig = {
     r: 200
 };
 
+// 语言切换相关变量
+let currentLang = localStorage.getItem('lang') || 'en';
+
+// 中英文文本映射
+const translations = {
+    en: {
+        sidebarTitle: 'Theorems',
+        backToAll: 'All Theorems',
+        theorem1: 'Angle at the Centre',
+        theorem2: 'Angles in a Semicircle',
+        theorem3: 'Angles in the Same Segment',
+        theorem4: 'Cyclic Quadrilateral',
+        theorem5: 'Radius to a Tangent',
+        theorem6: 'Tangents from a Point I',
+        theorem7: 'Tangents from a Point II',
+        theorem8: 'Alternate Segment Theorem',
+        backBtn: 'Back to All Theorems',
+        angleCentre: 'Angle at Centre (∠AOB)',
+        angleCircum: 'Angle at Circumference (∠ACB)'
+    },
+    zh: {
+        sidebarTitle: '定理列表',
+        backToAll: '全部定理',
+        theorem1: '圆心角',
+        theorem2: '半圆上的角',
+        theorem3: '同弧所对的角',
+        theorem4: '圆内接四边形',
+        theorem5: '切线的性质',
+        theorem6: '切线长定理 I',
+        theorem7: '切线长定理 II',
+        theorem8: '弦切角定理',
+        backBtn: '返回全部定理',
+        angleCentre: '圆心角 (∠AOB)',
+        angleCircum: '圆周角 (∠ACB)'
+    }
+};
+
+// 获取翻译文本
+function t(key) {
+    return translations[currentLang][key] || translations['en'][key] || key;
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
     initTheorem1Interaction();
+    initSidebar();
+    initLangBtn();
+    initTheme();
+    initFontSize();
+    initMobileMenu();
+    initBackToTop();
+    applyTranslations();
 });
+
+// ========================================
+// 边栏功能初始化
+// ========================================
+function initSidebar() {
+    const sidebar = document.getElementById('theoremSidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+
+    if (sidebar && toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            const icon = toggleBtn.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.className = 'fas fa-chevron-left';
+            } else {
+                icon.className = 'fas fa-chevron-right';
+            }
+            // 保存状态到 localStorage
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        });
+
+        // 恢复之前的状态
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        if (savedState === 'true') {
+            sidebar.classList.add('collapsed');
+            toggleBtn.querySelector('i').className = 'fas fa-chevron-left';
+        }
+    }
+}
+
+// ========================================
+// 语言切换功能
+// ========================================
+function initLangBtn() {
+    const langBtn = document.getElementById('langBtn');
+    currentLang = localStorage.getItem('lang') || 'en';
+    updateLangButton();
+
+    if (langBtn) {
+        langBtn.addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'zh' : 'en';
+            localStorage.setItem('lang', currentLang);
+            updateLangButton();
+            applyTranslations();
+        });
+    }
+}
+
+function updateLangButton() {
+    const langBtn = document.getElementById('langBtn');
+    const langText = langBtn ? langBtn.querySelector('span') : null;
+    if (langText) {
+        langText.textContent = currentLang === 'en' ? 'EN' : '中';
+    }
+}
+
+function applyTranslations() {
+    // 更新边栏标题
+    const sidebarTitle = document.querySelector('.sidebar-header h3 span');
+    if (sidebarTitle) sidebarTitle.textContent = t('sidebarTitle');
+
+    // 更新边栏返回按钮
+    const backBtn = document.querySelector('.sidebar-back-btn');
+    if (backBtn) backBtn.innerHTML = '<i class="fas fa-th"></i> ' + t('backToAll');
+
+    // 更新定理导航标题
+    const theoremTitles = document.querySelectorAll('.theorem-nav-title');
+    const titleKeys = ['theorem1', 'theorem2', 'theorem3', 'theorem4', 'theorem5', 'theorem6', 'theorem7', 'theorem8'];
+    theoremTitles.forEach((title, index) => {
+        if (titleKeys[index]) {
+            title.textContent = t(titleKeys[index]);
+        }
+    });
+
+    // 更新数据面板标签
+    const angleCentreLabel = document.querySelector('.data-central .data-label');
+    const angleCircumLabel = document.querySelector('.data-circum .data-label');
+    if (angleCentreLabel) angleCentreLabel.textContent = t('angleCentre');
+    if (angleCircumLabel) angleCircumLabel.textContent = t('angleCircum');
+}
+
+// ========================================
+// 深色模式功能
+// ========================================
+function initTheme() {
+    const themeBtn = document.getElementById('themeBtn');
+    const savedTheme = localStorage.getItem('theme') || 'light';
+
+    if (savedTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        updateThemeIcon(true);
+    }
+
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            const isDark = document.body.toggleAttribute('data-theme');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon(isDark);
+        });
+    }
+
+    function updateThemeIcon(isDark) {
+        if (themeBtn) {
+            themeBtn.innerHTML = isDark
+                ? '<i class="fas fa-sun"></i>'
+                : '<i class="fas fa-moon"></i>';
+        }
+    }
+}
+
+// ========================================
+// 字体大小功能
+// ========================================
+function initFontSize() {
+    const fontBtns = document.querySelectorAll('.font-btn');
+    const savedSize = localStorage.getItem('fontSize') || '16';
+
+    document.documentElement.style.setProperty('--font-size-base', savedSize + 'px');
+    updateActiveFontBtn(savedSize);
+
+    fontBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const size = btn.id === 'fontS' ? '14' : btn.id === 'fontL' ? '18' : '16';
+            document.documentElement.style.setProperty('--font-size-base', size + 'px');
+            localStorage.setItem('fontSize', size);
+            updateActiveFontBtn(size);
+        });
+    });
+
+    function updateActiveFontBtn(size) {
+        fontBtns.forEach(b => b.classList.remove('active'));
+        const activeBtn = document.getElementById(size === '14' ? 'fontS' : size === '18' ? 'fontL' : 'fontM');
+        if (activeBtn) activeBtn.classList.add('active');
+    }
+}
+
+// ========================================
+// 移动端菜单
+// ========================================
+function initMobileMenu() {
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('show');
+            menuBtn.innerHTML = mobileMenu.classList.contains('show')
+                ? '<i class="fas fa-times"></i>'
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('show');
+                menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+    }
+}
+
+// ========================================
+// 返回顶部按钮
+// ========================================
+function initBackToTop() {
+    const backToTop = document.getElementById('backToTop');
+
+    if (backToTop) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+}
 
 // ========================================
 // 核心交互逻辑
@@ -56,7 +285,7 @@ function initTheorem1Interaction() {
     // 拖拽过程
     svg.addEventListener('mousemove', drag);
     svg.addEventListener('touchmove', drag, { passive: false });
-    
+
     // 结束拖拽
     document.addEventListener('mouseup', endDrag);
     document.addEventListener('touchend', endDrag);
@@ -80,7 +309,7 @@ function initTheorem1Interaction() {
         // 获取鼠标/触摸在SVG中的坐标
         const svg = document.getElementById('theoremSvg');
         const pt = svg.createSVGPoint();
-        
+
         if (e.touches) {
             // 移动端触摸坐标
             pt.x = e.touches[0].clientX;
@@ -123,7 +352,7 @@ function initTheorem1Interaction() {
     // 动态调整标签位置，避免被图形遮挡
     function updateLabelPosition(key, x, y) {
         let offsetX = 15, offsetY = 5;
-        
+
         // 根据点在圆上的象限调整标签偏移
         if (x < svgConfig.cx) offsetX = -30;
         if (y > svgConfig.cy) offsetY = 25;
@@ -204,13 +433,13 @@ function updateLine(id, p1, p2) {
 function calculateAngle(vertex, p1, p2) {
     const v1 = { x: p1.x - vertex.x, y: p1.y - vertex.y };
     const v2 = { x: p2.x - vertex.x, y: p2.y - vertex.y };
-    
+
     const dot = v1.x * v2.x + v1.y * v2.y;
     const det = v1.x * v2.y - v1.y * v2.x;
-    
+
     let angle = Math.atan2(det, dot);
     if (angle < 0) angle += 2 * Math.PI;
-    
+
     return angle * (180 / Math.PI);
 }
 
@@ -218,7 +447,7 @@ function calculateAngle(vertex, p1, p2) {
 function drawArc(id, centre, p1, p2, radius, type) {
     const path = document.getElementById(id);
     if (!path) return;
-    
+
     const startAngle = Math.atan2(p1.y - centre.y, p1.x - centre.x);
     const endAngle = Math.atan2(p2.y - centre.y, p2.x - centre.x);
 
@@ -230,7 +459,7 @@ function drawArc(id, centre, p1, p2, radius, type) {
     // 计算角度差，决定大弧/小弧
     let angleDiff = endAngle - startAngle;
     if (angleDiff < 0) angleDiff += 2 * Math.PI;
-    
+
     const largeArcFlag = angleDiff > Math.PI ? 1 : 0;
     // 构建SVG路径
     const d = `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`;
