@@ -53,108 +53,174 @@
         <span class="breadcrumb-current">Cyclic Quadrilateral</span>
     </div>
 
-    <div class="container">
-        <div class="detail-header">
-            <button class="btn btn-outline btn-sm" onclick="window.location.href='../game.html'">
-                <i class="fas fa-arrow-left"></i> Back
-            </button>
-            <h2 class="detail-title">Circle Theorem 4: Cyclic Quadrilateral</h2>
+    <!-- 主内容区域 + 边栏布局 -->
+    <div class="theorem-layout">
+        <!-- 左侧主内容 -->
+        <div class="theorem-main-content">
+            <div class="detail-header">
+                <button class="btn btn-outline btn-sm" onclick="window.location.href='../game.html'">
+                    <i class="fas fa-arrow-left"></i> Back to All Theorems
+                </button>
+                <h2 class="detail-title">Circle Theorem 4: Cyclic Quadrilateral</h2>
+            </div>
+
+            <div class="theorem-info-panel">
+                <div class="info-card">
+                    <h3><i class="fas fa-lightbulb"></i> How to Explore</h3>
+                    <ul>
+                        <li>Drag all 4 points (A, B, C, D) anywhere on the circle.</li>
+                        <li>Observe: <span class="formula">∠A + ∠C = 180°</span> and <span class="formula">∠B + ∠D = 180°</span>.</li>
+                        <li>The sum of opposite angles is always 180 degrees.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="interactive-container">
+                <div class="canvas-wrapper">
+                    <svg id="theoremSvg" viewBox="0 0 600 600" class="theorem-svg-interactive">
+                        <circle id="mainCircle" cx="300" cy="300" r="200" fill="none" stroke="var(--primary)" stroke-width="3"/>
+                        <line id="lineAB" stroke="var(--primary)" stroke-width="2"/>
+                        <line id="lineBC" stroke="var(--primary)" stroke-width="2"/>
+                        <line id="lineCD" stroke="var(--primary)" stroke-width="2"/>
+                        <line id="lineDA" stroke="var(--primary)" stroke-width="2"/>
+                        <path id="arcA" fill="none" stroke="#f39c12" stroke-width="4"/>
+                        <path id="arcB" fill="none" stroke="#27ae60" stroke-width="4"/>
+                        <path id="arcC" fill="none" stroke="#f39c12" stroke-width="4"/>
+                        <path id="arcD" fill="none" stroke="#27ae60" stroke-width="4"/>
+                        <circle id="pointO" cx="300" cy="300" r="8" fill="var(--secondary)"/>
+                        <text x="310" y="295" fill="var(--secondary)" font-weight="700" font-size="18">O</text>
+                        <circle id="pointA" cx="150" cy="150" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
+                        <text id="labelA" x="135" y="140" fill="var(--dark)" font-weight="700" font-size="18">A</text>
+                        <circle id="pointB" cx="450" cy="150" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
+                        <text id="labelB" x="465" y="140" fill="var(--dark)" font-weight="700" font-size="18">B</text>
+                        <circle id="pointC" cx="450" cy="450" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
+                        <text id="labelC" x="465" y="465" fill="var(--dark)" font-weight="700" font-size="18">C</text>
+                        <circle id="pointD" cx="150" cy="450" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
+                        <text id="labelD" x="135" y="465" fill="var(--dark)" font-weight="700" font-size="18">D</text>
+                    </svg>
+                </div>
+
+                <div class="data-panel">
+                    <div class="data-row">
+                        <div class="data-card data-a">
+                            <div class="data-label">Angle ∠A</div>
+                            <div class="data-value" id="angleA">0°</div>
+                        </div>
+                        <div class="data-relation">
+                            <i class="fas fa-plus fa-lg"></i>
+                        </div>
+                        <div class="data-card data-c">
+                            <div class="data-label">Angle ∠C</div>
+                            <div class="data-value" id="angleC">0°</div>
+                        </div>
+                        <div class="data-relation">
+                            <i class="fas fa-equals fa-lg"></i>
+                        </div>
+                        <div class="data-card data-sum">
+                            <div class="data-label">Sum (A + C)</div>
+                            <div class="data-value" id="sumAC">0°</div>
+                        </div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-card data-b">
+                            <div class="data-label">Angle ∠B</div>
+                            <div class="data-value" id="angleB">0°</div>
+                        </div>
+                        <div class="data-relation">
+                            <i class="fas fa-plus fa-lg"></i>
+                        </div>
+                        <div class="data-card data-d">
+                            <div class="data-label">Angle ∠D</div>
+                            <div class="data-value" id="angleD">0°</div>
+                        </div>
+                        <div class="data-relation">
+                            <i class="fas fa-equals fa-lg"></i>
+                        </div>
+                        <div class="data-card data-sum">
+                            <div class="data-label">Sum (B + D)</div>
+                            <div class="data-value" id="sumBD">0°</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="theorem-info-panel">
-            <div class="info-card">
-                <h3><i class="fas fa-lightbulb"></i> How to Explore</h3>
-                <ul>
-                    <li>Drag all 4 points (A, B, C, D) anywhere on the circle.</li>
-                    <li>Observe: <span class="formula">∠A + ∠C = 180°</span> and <span class="formula">∠B + ∠D = 180°</span>.</li>
-                    <li>The sum of opposite angles is always 180 degrees.</li>
+        <!-- 右侧边栏导航 -->
+        <aside class="theorem-sidebar" id="theoremSidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-th-large"></i> <span data-i18n="sidebar.title">Theorems</span></h3>
+                <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="sidebar-content">
+                <ul class="theorem-nav-list">
+                    <li class="theorem-nav-item" data-theorem="1">
+                        <a href="theorem1.html">
+                            <span class="theorem-number">1</span>
+                            <span class="theorem-nav-title">Angle at the Centre</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="2">
+                        <a href="theorem2.html">
+                            <span class="theorem-number">2</span>
+                            <span class="theorem-nav-title">Angles in a Semicircle</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="3">
+                        <a href="theorem3.html">
+                            <span class="theorem-number">3</span>
+                            <span class="theorem-nav-title">Angles in the Same Segment</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item active" data-theorem="4">
+                        <a href="theorem4.html">
+                            <span class="theorem-number">4</span>
+                            <span class="theorem-nav-title">Cyclic Quadrilateral</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-check-circle"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="5">
+                        <a href="theorem5.html">
+                            <span class="theorem-number">5</span>
+                            <span class="theorem-nav-title">Radius to a Tangent</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="6">
+                        <a href="theorem6.html">
+                            <span class="theorem-number">6</span>
+                            <span class="theorem-nav-title">Tangents from a Point I</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="7">
+                        <a href="theorem7.html">
+                            <span class="theorem-number">7</span>
+                            <span class="theorem-nav-title">Tangents from a Point II</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="theorem-nav-item" data-theorem="8">
+                        <a href="theorem8.html">
+                            <span class="theorem-number">8</span>
+                            <span class="theorem-nav-title">Alternate Segment Theorem</span>
+                            <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
                 </ul>
-            </div>
-        </div>
-
-        <div class="interactive-container">
-            <div class="canvas-wrapper">
-                <svg id="theoremSvg" viewBox="0 0 600 600" class="theorem-svg-interactive">
-                    <!-- 主圆 -->
-                    <circle id="mainCircle" cx="300" cy="300" r="200" fill="none" stroke="var(--primary)" stroke-width="3"/>
-                    
-                    <!-- 四边形边 -->
-                    <line id="lineAB" stroke="var(--primary)" stroke-width="2"/>
-                    <line id="lineBC" stroke="var(--primary)" stroke-width="2"/>
-                    <line id="lineCD" stroke="var(--primary)" stroke-width="2"/>
-                    <line id="lineDA" stroke="var(--primary)" stroke-width="2"/>
-                    
-                    <!-- 角度弧 -->
-                    <path id="arcA" fill="none" stroke="#f39c12" stroke-width="4"/>
-                    <path id="arcB" fill="none" stroke="#27ae60" stroke-width="4"/>
-                    <path id="arcC" fill="none" stroke="#f39c12" stroke-width="4"/>
-                    <path id="arcD" fill="none" stroke="#27ae60" stroke-width="4"/>
-                    
-                    <!-- 圆心 O -->
-                    <circle id="pointO" cx="300" cy="300" r="8" fill="var(--secondary)"/>
-                    <text x="310" y="295" fill="var(--secondary)" font-weight="700" font-size="18">O</text>
-                    
-                    <!-- 可拖拽点 A, B, C, D -->
-                    <circle id="pointA" cx="150" cy="150" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
-                    <text id="labelA" x="135" y="140" fill="var(--dark)" font-weight="700" font-size="18">A</text>
-
-                    <circle id="pointB" cx="450" cy="150" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
-                    <text id="labelB" x="465" y="140" fill="var(--dark)" font-weight="700" font-size="18">B</text>
-                    
-                    <circle id="pointC" cx="450" cy="450" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
-                    <text id="labelC" x="465" y="465" fill="var(--dark)" font-weight="700" font-size="18">C</text>
-                    
-                    <circle id="pointD" cx="150" cy="450" r="12" fill="var(--accent)" stroke="white" stroke-width="2" style="cursor:move"/>
-                    <text id="labelD" x="135" y="465" fill="var(--dark)" font-weight="700" font-size="18">D</text>
-                </svg>
-            </div>
-
-            <div class="data-panel">
-                <div class="data-row">
-                    <div class="data-card data-a">
-                        <div class="data-label">Angle ∠A</div>
-                        <div class="data-value" id="angleA">0°</div>
-                    </div>
-                    <div class="data-relation">
-                        <i class="fas fa-plus fa-lg"></i>
-                    </div>
-                    <div class="data-card data-c">
-                        <div class="data-label">Angle ∠C</div>
-                        <div class="data-value" id="angleC">0°</div>
-                    </div>
-                    <div class="data-relation">
-                        <i class="fas fa-equals fa-lg"></i>
-                    </div>
-                    <div class="data-card data-sum">
-                        <div class="data-label">Sum (A + C)</div>
-                        <div class="data-value" id="sumAC">0°</div>
-                    </div>
-                </div>
-                <div class="data-row">
-                    <div class="data-card data-b">
-                        <div class="data-label">Angle ∠B</div>
-                        <div class="data-value" id="angleB">0°</div>
-                    </div>
-                    <div class="data-relation">
-                        <i class="fas fa-plus fa-lg"></i>
-                    </div>
-                    <div class="data-card data-d">
-                        <div class="data-label">Angle ∠D</div>
-                        <div class="data-value" id="angleD">0°</div>
-                    </div>
-                    <div class="data-relation">
-                        <i class="fas fa-equals fa-lg"></i>
-                    </div>
-                    <div class="data-card data-sum">
-                        <div class="data-label">Sum (B + D)</div>
-                        <div class="data-value" id="sumBD">0°</div>
-                    </div>
+                <div class="sidebar-footer">
+                    <a href="../game.html" class="sidebar-back-btn">
+                        <i class="fas fa-th"></i> All Theorems
+                    </a>
                 </div>
             </div>
-        </div>
+        </aside>
     </div>
 
-     <!-- 复用全局页脚 -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
@@ -189,15 +255,18 @@
         <div class="footer-bottom">
             <p>© 2026 Circle Planet. All rights reserved.</p>
             <p class="footer-features">
-                <span class="feature-tag">🎨 Colour-blind Friendly</span>
-                <span class="feature-tag">📱 Mobile Responsive</span>
-                <span class="feature-tag">🌐 Bilingual Support</span>
-                <span class="feature-tag">🌙 Dark Mode</span>
+                <span class="feature-tag">Colour-blind Friendly</span>
+                <span class="feature-tag">Mobile Responsive</span>
+                <span class="feature-tag">Bilingual Support</span>
+                <span class="feature-tag">Dark Mode</span>
             </p>
         </div>
     </footer>
 
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <script src="../script.js"></script>
     <script src="theorem4.js"></script>
 </body>
-</html>
