@@ -19,12 +19,12 @@
     <nav class="navbar">
         <div class="logo" onclick="window.location.href='../index.html'">
             <div class="logo-circle"><i class="fas fa-circle"></i></div>
-            <span class="logo-text">Circle Planet</span>
+            <span class="logo-text" data-i18n="logo">Circle Planet</span>
         </div>
         <div class="main-nav">
-            <a href="../index.html" class="nav-link">Home</a>
-            <a href="../game.html" class="nav-link active">Game</a>
-            <a href="../quiz.html" class="nav-link">Quiz</a>
+            <a href="../index.html" class="nav-link" data-i18n="navHome">Home</a>
+            <a href="../game.html" class="nav-link active" data-i18n="navGame">Game</a>
+            <a href="../quiz.html" class="nav-link" data-i18n="navQuiz">Quiz</a>
         </div>
         <div class="function-buttons">
             <button class="btn btn-outline btn-sm" id="langBtn"><i class="fas fa-language"></i> <span>EN</span></button>
@@ -40,17 +40,17 @@
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
-        <a href="../index.html" class="mobile-nav-link">Home</a>
-        <a href="../game.html" class="mobile-nav-link">Game</a>
-        <a href="../quiz.html" class="mobile-nav-link">Quiz</a>
+        <a href="../index.html" class="mobile-nav-link" data-i18n="mobileHome">Home</a>
+        <a href="../game.html" class="mobile-nav-link" data-i18n="mobileGame">Game</a>
+        <a href="../quiz.html" class="mobile-nav-link" data-i18n="mobileQuiz">Quiz</a>
     </div>
 
     <div class="breadcrumb">
-        <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="../index.html"><i class="fas fa-home"></i> <span data-i18n="breadcrumbHome">Home</span></a>
         <span class="breadcrumb-separator">/</span>
-        <a href="../game.html">Interactive Theorems</a>
+        <a href="../game.html" data-i18n="breadcrumbGame">Interactive Theorems</a>
         <span class="breadcrumb-separator">/</span>
-        <span class="breadcrumb-current">Cyclic Quadrilateral</span>
+        <span class="breadcrumb-current" data-i18n="breadcrumbCurrent">Cyclic Quadrilateral</span>
     </div>
 
     <!-- 主内容区域 + 边栏布局 -->
@@ -58,19 +58,19 @@
         <!-- 左侧主内容 -->
         <div class="theorem-main-content">
             <div class="detail-header">
-                <button class="btn btn-outline btn-sm" onclick="window.location.href='../game.html'">
+                <button class="btn btn-outline btn-sm back-btn" data-i18n="backBtn" onclick="window.location.href='../game.html'">
                     <i class="fas fa-arrow-left"></i> Back to All Theorems
                 </button>
-                <h2 class="detail-title">Circle Theorem 4: Cyclic Quadrilateral</h2>
+                <h2 class="detail-title" data-i18n="detailTitle">Circle Theorem 4: Cyclic Quadrilateral</h2>
             </div>
 
             <div class="theorem-info-panel">
                 <div class="info-card">
-                    <h3><i class="fas fa-lightbulb"></i> How to Explore</h3>
+                    <h3 data-i18n="infoTitle"><i class="fas fa-lightbulb"></i> How to Explore</h3>
                     <ul>
-                        <li>Drag all 4 points (A, B, C, D) anywhere on the circle.</li>
-                        <li>Observe: <span class="formula">∠A + ∠C = 180°</span> and <span class="formula">∠B + ∠D = 180°</span>.</li>
-                        <li>The sum of opposite angles is always 180 degrees.</li>
+                        <li class="info-point" data-i18n="infoPoint1">Drag all 4 points (A, B, C, D) anywhere on the circle.</li>
+                        <li class="info-point" data-i18n="infoPoint2">Observe: <span class="formula">∠A + ∠C = 180°</span> and <span class="formula">∠B + ∠D = 180°</span>.</li>
+                        <li class="info-point" data-i18n="infoPoint3">The sum of opposite angles is always 180 degrees.</li>
                     </ul>
                 </div>
             </div>
@@ -103,41 +103,41 @@
                 <div class="data-panel">
                     <div class="data-row">
                         <div class="data-card data-a">
-                            <div class="data-label">Angle ∠A</div>
+                            <div class="data-label" data-i18n="angleALabel">Angle ∠A</div>
                             <div class="data-value" id="angleA">0°</div>
                         </div>
                         <div class="data-relation">
                             <i class="fas fa-plus fa-lg"></i>
                         </div>
                         <div class="data-card data-c">
-                            <div class="data-label">Angle ∠C</div>
+                            <div class="data-label" data-i18n="angleCLabel">Angle ∠C</div>
                             <div class="data-value" id="angleC">0°</div>
                         </div>
                         <div class="data-relation">
                             <i class="fas fa-equals fa-lg"></i>
                         </div>
                         <div class="data-card data-sum">
-                            <div class="data-label">Sum (A + C)</div>
+                            <div class="data-label" data-i18n="sumACLabel">Sum (A + C)</div>
                             <div class="data-value" id="sumAC">0°</div>
                         </div>
                     </div>
                     <div class="data-row">
                         <div class="data-card data-b">
-                            <div class="data-label">Angle ∠B</div>
+                            <div class="data-label" data-i18n="angleBLabel">Angle ∠B</div>
                             <div class="data-value" id="angleB">0°</div>
                         </div>
                         <div class="data-relation">
                             <i class="fas fa-plus fa-lg"></i>
                         </div>
                         <div class="data-card data-d">
-                            <div class="data-label">Angle ∠D</div>
+                            <div class="data-label" data-i18n="angleDLabel">Angle ∠D</div>
                             <div class="data-value" id="angleD">0°</div>
                         </div>
                         <div class="data-relation">
                             <i class="fas fa-equals fa-lg"></i>
                         </div>
                         <div class="data-card data-sum">
-                            <div class="data-label">Sum (B + D)</div>
+                            <div class="data-label" data-i18n="sumBDLabel">Sum (B + D)</div>
                             <div class="data-value" id="sumBD">0°</div>
                         </div>
                     </div>
@@ -148,7 +148,7 @@
         <!-- 右侧边栏导航 -->
         <aside class="theorem-sidebar" id="theoremSidebar">
             <div class="sidebar-header">
-                <h3><i class="fas fa-th-large"></i> <span data-i18n="sidebar.title">Theorems</span></h3>
+                <h3><i class="fas fa-th-large"></i> <span>Theorems</span></h3>
                 <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
                     <i class="fas fa-chevron-right"></i>
                 </button>
@@ -224,41 +224,41 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>Circle Planet</h4>
-                <p>Interactive Circle Theorem Learning Platform</p>
+                <h4 class="footer-brand" data-i18n="footerBrand">Circle Planet</h4>
+                <p class="footer-desc" data-i18n="footerDesc">Interactive Circle Theorem Learning Platform</p>
             </div>
             <div class="footer-section">
-                <h4>Quick Links</h4>
+                <h4 class="footer-title" data-i18n="footerQuickLinks">Quick Links</h4>
                 <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../game.html">Game</a></li>
-                    <li><a href="../quiz.html">Quiz</a></li>
+                    <li><a href="../index.html" class="footer-link" data-i18n="footerHome">Home</a></li>
+                    <li><a href="../game.html" class="footer-link" data-i18n="footerGame">Game</a></li>
+                    <li><a href="../quiz.html" class="footer-link" data-i18n="footerQuiz">Quiz</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Legal</h4>
+                <h4 class="footer-title" data-i18n="footerLegal">Legal</h4>
                 <ul>
-                    <li><a href="../privacy.html">Privacy Policy</a></li>
-                    <li><a href="../terms.html">Terms of Use</a></li>
-                    <li><a href="../cookies.html">Cookie Policy</a></li>
+                    <li><a href="../privacy.html" class="footer-link" data-i18n="footerPrivacy">Privacy Policy</a></li>
+                    <li><a href="../terms.html" class="footer-link" data-i18n="footerTerms">Terms of Use</a></li>
+                    <li><a href="../cookies.html" class="footer-link" data-i18n="footerCookies">Cookie Policy</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Accessibility</h4>
+                <h4 class="footer-title" data-i18n="footerAccessibility">Accessibility</h4>
                 <ul>
-                    <li><i class="fas fa-eye"></i> Colour-blind Friendly</li>
-                    <li><i class="fas fa-text-height"></i> Adjustable Font</li>
-                    <li><i class="fas fa-moon"></i> Dark Mode</li>
+                    <li><i class="fas fa-eye"></i> <span class="feature-item" data-i18n="footerColourBlind">Colour-blind Friendly</span></li>
+                    <li><i class="fas fa-text-height"></i> <span class="feature-item" data-i18n="footerFont">Adjustable Font</span></li>
+                    <li><i class="fas fa-moon"></i> <span class="feature-item" data-i18n="footerDarkMode">Dark Mode</span></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>© 2026 Circle Planet. All rights reserved.</p>
+            <p class="footer-copyright" data-i18n="footerCopyright">© 2026 Circle Planet. All rights reserved.</p>
             <p class="footer-features">
-                <span class="feature-tag">Colour-blind Friendly</span>
-                <span class="feature-tag">Mobile Responsive</span>
-                <span class="feature-tag">Bilingual Support</span>
-                <span class="feature-tag">Dark Mode</span>
+                <span class="feature-tag" data-i18n="featureColourBlind">Colour-blind Friendly</span>
+                <span class="feature-tag" data-i18n="featureMobile">Mobile Responsive</span>
+                <span class="feature-tag" data-i18n="featureBilingual">Bilingual Support</span>
+                <span class="feature-tag" data-i18n="featureDarkMode">Dark Mode</span>
             </p>
         </div>
     </footer>
@@ -269,4 +269,150 @@
 
     <script src="../script.js"></script>
     <script src="theorem4.js"></script>
-</body>
+
+<style>
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.inland-security-footer {
+  position: fixed;
+  z-index: 10;
+  bottom: 0;
+  right: 0;
+  width: fit-content;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tooltip-container {
+  position: relative;
+}
+
+.trigger-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background-color: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.minimax-link {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 300;
+  color: #adadad;
+  text-decoration: none;
+}
+
+.minimax-link:visited {
+  color: #adadad;
+}
+
+.minimax-link:hover {
+  color: #666666;
+}
+
+.tooltip-content {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  padding-bottom: 16px; /* 8px 内容间距 + 8px 用于鼠标移动的透明区域 */
+  font-size: 12px;
+  line-height: 17px;
+  background-color: #fafafa;
+  border-radius: 12px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  color: #171717;
+}
+
+/* 创建透明的连接区域，让鼠标可以平滑移动到 tooltip */
+.tooltip-content::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 16px;
+}
+
+.tooltip-container:hover .tooltip-content {
+  display: flex;
+}
+
+.info-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.beian-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #171717;
+}
+
+.beian-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 2px;
+}
+
+.underline-text {
+  color: #171717;
+  text-decoration: underline;
+}
+
+.underline-text:hover {
+  color: #000000;
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .trigger-content {
+    background-color: transparent;
+  }
+
+  .minimax-link,
+  .minimax-link:visited {
+    color: #666666;
+  }
+
+  .minimax-link:hover {
+    color: #adadad;
+  }
+
+  .tooltip-content {
+    background-color: #262626;
+    color: #ededed;
+  }
+
+  .beian-link,
+  .underline-text {
+    color: #ededed;
+  }
+
+  .underline-text:hover {
+    color: #ffffff;
+  }
+}
+

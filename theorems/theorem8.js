@@ -2,6 +2,9 @@
    Theorem 8: Alternate Segment Theorem - 专属交互逻辑
    ======================================== */
 
+// 全局标记：防止重复初始化主题功能（与 script.js 保持一致）
+window.themeInitialized = window.themeInitialized || false;
+
 let isDragging = false;
 let activePoint = null;
 const svgConfig = { cx: 300, cy: 300, r: 200 };
@@ -11,11 +14,51 @@ const tangentLength = 400;
 // 语言切换相关变量
 let currentLang = localStorage.getItem('lang') || 'en';
 
-// 中英文文本映射
+// 中英文文本映射 - 完整的翻译
 const translations = {
     en: {
+        // 页面标题
+        pageTitle: 'Circle Theorem 8 | Alternate Segment Theorem',
+        loadingText: 'Loading Playground...',
+        logo: 'Circle Planet',
+
+        // 导航栏
+        navHome: 'Home',
+        navGame: 'Game',
+        navQuiz: 'Quiz',
+
+        // 移动端菜单
+        mobileHome: 'Home',
+        mobileGame: 'Game',
+        mobileQuiz: 'Quiz',
+
+        // 面包屑导航
+        breadcrumbHome: 'Home',
+        breadcrumbGame: 'Interactive Theorems',
+        breadcrumbCurrent: 'Alternate Segment Theorem',
+
+        // 详情页头部
+        backBtn: 'Back to All Theorems',
+        detailTitle: 'Circle Theorem 8: Alternate Segment Theorem',
+
+        // 信息卡片
+        infoTitle: 'How to Explore',
+        infoPoint1: 'Drag the tangent point <strong>A</strong> and circle points <strong>B</strong>, <strong>C</strong> freely on the circle.',
+        infoPoint2: 'The tangent line will rotate automatically with point A.',
+        infoPoint3: 'Observe: The angle between the tangent and chord is <strong>equal to the angle in the alternate segment</strong>.',
+        infoPoint4: '<span class="formula">∠Tangent-AB = ∠ACB</span> and <span class="formula">∠Tangent-AC = ∠ABC</span> always hold true.',
+
+        // 数据面板标签
+        tangentChordA1: 'Tangent-Chord Angle (A)',
+        alternateC: 'Alternate Angle (C)',
+        tangentChordA2: 'Tangent-Chord Angle (A)',
+        alternateB: 'Alternate Angle (B)',
+
+        // 边栏
         sidebarTitle: 'Theorems',
         backToAll: 'All Theorems',
+
+        // 8个定理标题
         theorem1: 'Angle at the Centre',
         theorem2: 'Angles in a Semicircle',
         theorem3: 'Angles in the Same Segment',
@@ -24,15 +67,69 @@ const translations = {
         theorem6: 'Tangents from a Point I',
         theorem7: 'Tangents from a Point II',
         theorem8: 'Alternate Segment Theorem',
-        backBtn: 'Back to All Theorems',
-        tangentChordA1: 'Tangent-Chord Angle (A)',
-        alternateC: 'Alternate Angle (C)',
-        tangentChordA2: 'Tangent-Chord Angle (A)',
-        alternateB: 'Alternate Angle (B)'
+
+        // 页脚
+        footerBrand: 'Circle Planet',
+        footerDesc: 'Interactive Circle Theorem Learning Platform',
+        footerQuickLinks: 'Quick Links',
+        footerHome: 'Home',
+        footerGame: 'Game',
+        footerQuiz: 'Quiz',
+        footerLegal: 'Legal',
+        footerPrivacy: 'Privacy Policy',
+        footerTerms: 'Terms of Use',
+        footerCookies: 'Cookie Policy',
+        footerAccessibility: 'Accessibility',
+        featureColourBlind: 'Colour-blind Friendly',
+        featureFont: 'Adjustable Font',
+        featureDarkMode: 'Dark Mode',
+        featureMobile: 'Mobile Responsive',
+        featureBilingual: 'Bilingual Support',
+        footerCopyright: '© 2026 Circle Planet. All rights reserved.'
     },
     zh: {
+        // 页面标题
+        pageTitle: '圆定理 8 | 弦切角定理',
+        loadingText: '正在加载交互区...',
+        logo: '圆球星球',
+
+        // 导航栏
+        navHome: '首页',
+        navGame: '游戏',
+        navQuiz: '测验',
+
+        // 移动端菜单
+        mobileHome: '首页',
+        mobileGame: '游戏',
+        mobileQuiz: '测验',
+
+        // 面包屑导航
+        breadcrumbHome: '首页',
+        breadcrumbGame: '交互式定理',
+        breadcrumbCurrent: '弦切角定理',
+
+        // 详情页头部
+        backBtn: '返回全部定理',
+        detailTitle: '圆定理 8：弦切角定理',
+
+        // 信息卡片
+        infoTitle: '如何探索',
+        infoPoint1: '拖动切点<strong>A</strong>和圆上的点<strong>B</strong>、<strong>C</strong>在圆上自由移动。',
+        infoPoint2: '切线会随着点A的位置自动旋转。',
+        infoPoint3: '观察：切线与弦之间的角度<strong>等于圆内对应弧所对的圆周角</strong>。',
+        infoPoint4: '<span class="formula">∠切线-AB = ∠ACB</span> 且 <span class="formula">∠切线-AC = ∠ABC</span> 始终成立。',
+
+        // 数据面板标签
+        tangentChordA1: '弦切角 (A)',
+        alternateC: '圆周角 (C)',
+        tangentChordA2: '弦切角 (A)',
+        alternateB: '圆周角 (B)',
+
+        // 边栏
         sidebarTitle: '定理列表',
         backToAll: '全部定理',
+
+        // 8个定理标题
         theorem1: '圆心角',
         theorem2: '半圆上的角',
         theorem3: '同弧所对的角',
@@ -41,11 +138,25 @@ const translations = {
         theorem6: '切线长定理 I',
         theorem7: '切线长定理 II',
         theorem8: '弦切角定理',
-        backBtn: '返回全部定理',
-        tangentChordA1: '弦切角 (A)',
-        alternateC: '交替角 (C)',
-        tangentChordA2: '弦切角 (A)',
-        alternateB: '交替角 (B)'
+
+        // 页脚
+        footerBrand: '圆球星球',
+        footerDesc: '交互式圆定理学习平台',
+        footerQuickLinks: '快速链接',
+        footerHome: '首页',
+        footerGame: '游戏',
+        footerQuiz: '测验',
+        footerLegal: '法律信息',
+        footerPrivacy: '隐私政策',
+        footerTerms: '使用条款',
+        footerCookies: 'Cookie政策',
+        footerAccessibility: '无障碍功能',
+        featureColourBlind: '色盲友好',
+        featureFont: '可调节字体',
+        featureDarkMode: '深色模式',
+        featureMobile: '响应式设计',
+        featureBilingual: '双语支持',
+        footerCopyright: '© 2026 圆球星球 版权所有'
     }
 };
 
@@ -115,32 +226,50 @@ function updateLangButton() {
     const langBtn = document.getElementById('langBtn');
     const langText = langBtn ? langBtn.querySelector('span') : null;
     if (langText) {
-        langText.textContent = currentLang === 'en' ? 'EN' : '中';
+        langText.textContent = currentLang === 'en' ? '中' : 'EN';
     }
 }
 
+// ========================================
+// 完整的翻译应用函数
+// ========================================
 function applyTranslations() {
-    const sidebarTitle = document.querySelector('.sidebar-header h3 span');
-    if (sidebarTitle) sidebarTitle.textContent = t('sidebarTitle');
+    // 1. 翻译页面标题
+    const pageTitle = document.querySelector('title[data-i18n]');
+    if (pageTitle) {
+        pageTitle.textContent = t('pageTitle');
+    }
 
-    const backBtn = document.querySelector('.sidebar-back-btn');
-    if (backBtn) backBtn.innerHTML = '<i class="fas fa-th"></i> ' + t('backToAll');
-
-    const theoremTitles = document.querySelectorAll('.theorem-nav-title');
-    const titleKeys = ['theorem1', 'theorem2', 'theorem3', 'theorem4', 'theorem5', 'theorem6', 'theorem7', 'theorem8'];
-    theoremTitles.forEach((title, index) => {
-        if (titleKeys[index]) {
-            title.textContent = t(titleKeys[index]);
+    // 2. 翻译所有带有 data-i18n 属性的元素
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[currentLang][key] !== undefined) {
+            // 检查是否包含HTML标签
+            if (translations[currentLang][key].includes('<') && translations[currentLang][key].includes('>')) {
+                element.innerHTML = translations[currentLang][key];
+            } else {
+                element.textContent = translations[currentLang][key];
+            }
         }
     });
 
-    const labels = document.querySelectorAll('.data-label');
-    const labelKeys = ['tangentChordA1', 'alternateC', 'tangentChordA2', 'alternateB'];
-    labels.forEach((label, index) => {
-        if (labelKeys[index]) {
-            label.textContent = t(labelKeys[index]);
-        }
-    });
+    // 3. 翻译面包屑链接（需要特殊处理，因为有图标）
+    const breadcrumbHome = document.querySelector('.breadcrumb a:first-child span[data-i18n]');
+    if (breadcrumbHome) {
+        breadcrumbHome.textContent = t('breadcrumbHome');
+    }
+
+    // 4. 翻译返回按钮（需要保留图标）
+    const backBtn = document.querySelector('.detail-header .btn span[data-i18n]');
+    if (backBtn) {
+        backBtn.textContent = t('backBtn');
+    }
+
+    // 5. 翻译边栏底部按钮（需要保留图标）
+    const sidebarBackBtn = document.querySelector('.sidebar-back-btn span[data-i18n]');
+    if (sidebarBackBtn) {
+        sidebarBackBtn.textContent = t('backToAll');
+    }
 }
 
 // ========================================
@@ -148,24 +277,64 @@ function applyTranslations() {
 // ========================================
 function initTheme() {
     const themeBtn = document.getElementById('themeBtn');
-    const savedTheme = localStorage.getItem('theme') || 'light';
 
+    // Check if button exists
+    if (!themeBtn) {
+        console.error('Theme button not found!');
+        return;
+    }
+
+    // 防止重复初始化：如果已经初始化过，直接同步图标状态并返回
+    if (window.themeInitialized) {
+        updateThemeIcon();
+        return;
+    }
+
+    // 标记为已初始化
+    window.themeInitialized = true;
+
+    // Check saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+
+    // Initialize theme based on saved preference or system setting
+    function applyTheme(isDark) {
+        if (isDark) {
+            document.body.setAttribute('data-theme', 'dark');
+        } else {
+            document.body.removeAttribute('data-theme');
+        }
+        updateThemeIcon(isDark);
+    }
+
+    // Apply saved theme or check system preference
     if (savedTheme === 'dark') {
-        document.body.setAttribute('data-theme', 'dark');
-        updateThemeIcon(true);
+        applyTheme(true);
+    } else if (savedTheme === 'light') {
+        applyTheme(false);
+    } else {
+        // Check system preference
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(prefersDark);
     }
 
-    if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
-            const isDark = document.body.toggleAttribute('data-theme');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            updateThemeIcon(isDark);
-        });
-    }
+    // Toggle theme on click
+    themeBtn.addEventListener('click', () => {
+        const hasDarkTheme = document.body.hasAttribute('data-theme');
+        const newIsDark = !hasDarkTheme;
 
+        applyTheme(newIsDark);
+        localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
+
+        console.log('Theme toggled to:', newIsDark ? 'dark' : 'light');
+    });
+
+    // Update button icon
     function updateThemeIcon(isDark) {
         if (themeBtn) {
-            themeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            const themeIsDark = isDark !== undefined ? isDark : document.body.hasAttribute('data-theme');
+            themeBtn.innerHTML = themeIsDark
+                ? '<i class="fas fa-sun"></i>'
+                : '<i class="fas fa-moon"></i>';
         }
     }
 }

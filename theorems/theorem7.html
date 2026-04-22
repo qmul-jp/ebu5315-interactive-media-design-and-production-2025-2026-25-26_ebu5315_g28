@@ -13,18 +13,18 @@
 <body>
     <div class="loader" id="loader">
         <div class="loader-circle"></div>
-        <p class="loader-text">Loading Playground...</p>
+        <p class="loader-text" data-i18n="loadingText">Loading Playground...</p>
     </div>
 
     <nav class="navbar">
         <div class="logo" onclick="window.location.href='../index.html'">
             <div class="logo-circle"><i class="fas fa-circle"></i></div>
-            <span class="logo-text">Circle Planet</span>
+            <span class="logo-text" data-i18n="logo">Circle Planet</span>
         </div>
         <div class="main-nav">
-            <a href="../index.html" class="nav-link">Home</a>
-            <a href="../game.html" class="nav-link active">Game</a>
-            <a href="../quiz.html" class="nav-link">Quiz</a>
+            <a href="../index.html" class="nav-link" data-i18n="navHome">Home</a>
+            <a href="../game.html" class="nav-link active" data-i18n="navGame">Game</a>
+            <a href="../quiz.html" class="nav-link" data-i18n="navQuiz">Quiz</a>
         </div>
         <div class="function-buttons">
             <button class="btn btn-outline btn-sm" id="langBtn"><i class="fas fa-language"></i> <span>EN</span></button>
@@ -40,17 +40,17 @@
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
-        <a href="../index.html" class="mobile-nav-link">Home</a>
-        <a href="../game.html" class="mobile-nav-link">Game</a>
-        <a href="../quiz.html" class="mobile-nav-link">Quiz</a>
+        <a href="../index.html" class="mobile-nav-link" data-i18n="mobileHome">Home</a>
+        <a href="../game.html" class="mobile-nav-link" data-i18n="mobileGame">Game</a>
+        <a href="../quiz.html" class="mobile-nav-link" data-i18n="mobileQuiz">Quiz</a>
     </div>
 
     <div class="breadcrumb">
-        <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="../index.html"><i class="fas fa-home"></i> <span data-i18n="breadcrumbHome">Home</span></a>
         <span class="breadcrumb-separator">/</span>
-        <a href="../game.html">Interactive Theorems</a>
+        <a href="../game.html" data-i18n="breadcrumbGame">Interactive Theorems</a>
         <span class="breadcrumb-separator">/</span>
-        <span class="breadcrumb-current">Tangent Angle Bisector</span>
+        <span class="breadcrumb-current" data-i18n="breadcrumbCurrent">Tangent Angle Bisector</span>
     </div>
 
     <!-- 主内容区域 + 边栏布局 -->
@@ -58,20 +58,20 @@
         <!-- 左侧主内容 -->
         <div class="theorem-main-content">
             <div class="detail-header">
-                <button class="btn btn-outline btn-sm" onclick="window.location.href='../game.html'">
+                <button class="btn btn-outline btn-sm back-btn" data-i18n="backBtn" onclick="window.location.href='../game.html'">
                     <i class="fas fa-arrow-left"></i> Back to All Theorems
                 </button>
-                <h2 class="detail-title">Circle Theorem 7: Tangent Angle Bisector</h2>
+                <h2 class="detail-title" data-i18n="detailTitle">Circle Theorem 7: Tangent Angle Bisector</h2>
             </div>
 
             <div class="theorem-info-panel">
                 <div class="info-card">
-                    <h3><i class="fas fa-lightbulb"></i> How to Explore</h3>
+                    <h3 data-i18n="infoTitle"><i class="fas fa-lightbulb"></i> How to Explore</h3>
                     <ul>
-                        <li>Drag the external point <strong>B</strong> around the circle.</li>
-                        <li>Two tangent lines will automatically update with point B.</li>
-                        <li>Observe: Line OB <strong>bisects the angle between the two tangents</strong>.</li>
-                        <li><span class="formula">∠CBO = ∠DBO</span> always holds true.</li>
+                        <li data-i18n="infoPoint1">Drag the external point <strong>B</strong> around the circle.</li>
+                        <li data-i18n="infoPoint2">Two tangent lines will automatically update with point B.</li>
+                        <li data-i18n="infoPoint3">Observe: Line OB <strong>bisects the angle between the two tangents</strong>.</li>
+                        <li data-i18n="infoPoint4"><span class="formula">∠CBO = ∠DBO</span> always holds true.</li>
                     </ul>
                 </div>
             </div>
@@ -83,8 +83,8 @@
                         <circle id="mainCircle" cx="300" cy="300" r="200" fill="none" stroke="var(--primary)" stroke-width="3"/>
 
                         <!-- 两条切线 BC 和 BD -->
-                        <line id="tangentBC" stroke="#333" stroke-width="2.5"/>
-                        <line id="tangentBD" stroke="#333" stroke-width="2.5"/>
+                        <line id="tangentBC" stroke="#3498db" stroke-width="2.5"/>
+                        <line id="tangentBD" stroke="#3498db" stroke-width="2.5"/>
 
                         <!-- 半径 OC、OD 和 角平分线 OB -->
                         <line id="radiusOC" stroke="var(--dark)" stroke-width="2"/>
@@ -123,27 +123,27 @@
                 <div class="data-panel">
                     <div class="data-row">
                         <div class="data-card data-cbo">
-                            <div class="data-label">Angle ∠CBO</div>
+                            <div class="data-label" data-i18n="angleCBO">Angle ∠CBO</div>
                             <div class="data-value" id="valueCBO">0.0°</div>
                         </div>
                         <div class="data-relation">
                             <i class="fas fa-equals fa-lg"></i>
                         </div>
                         <div class="data-card data-dbo">
-                            <div class="data-label">Angle ∠DBO</div>
+                            <div class="data-label" data-i18n="angleDBO">Angle ∠DBO</div>
                             <div class="data-value" id="valueDBO">0.0°</div>
                         </div>
                     </div>
                     <div class="data-row mt-3">
                         <div class="data-card data-cb">
-                            <div class="data-label">Length |CB|</div>
+                            <div class="data-label" data-i18n="lengthCB">Length |CB|</div>
                             <div class="data-value" id="valueCB">0.0</div>
                         </div>
                         <div class="data-relation">
                             <i class="fas fa-equals fa-lg"></i>
                         </div>
                         <div class="data-card data-db">
-                            <div class="data-label">Length |DB|</div>
+                            <div class="data-label" data-i18n="lengthDB">Length |DB|</div>
                             <div class="data-value" id="valueDB">0.0</div>
                         </div>
                     </div>
@@ -154,7 +154,7 @@
         <!-- 右侧边栏导航 -->
         <aside class="theorem-sidebar" id="theoremSidebar">
             <div class="sidebar-header">
-                <h3><i class="fas fa-th-large"></i> <span data-i18n="sidebar.title">Theorems</span></h3>
+                <h3><i class="fas fa-th-large"></i> <span data-i18n="sidebarTitle">Theorems</span></h3>
                 <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
                     <i class="fas fa-chevron-right"></i>
                 </button>
@@ -164,62 +164,62 @@
                     <li class="theorem-nav-item" data-theorem="1">
                         <a href="theorem1.html">
                             <span class="theorem-number">1</span>
-                            <span class="theorem-nav-title">Angle at the Centre</span>
+                            <span class="theorem-nav-title" data-i18n="theorem1">Angle at the Centre</span>
                             <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </li>
                     <li class="theorem-nav-item" data-theorem="2">
                         <a href="theorem2.html">
                             <span class="theorem-number">2</span>
-                            <span class="theorem-nav-title">Angles in a Semicircle</span>
+                            <span class="theorem-nav-title" data-i18n="theorem2">Angles in a Semicircle</span>
                             <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </li>
                     <li class="theorem-nav-item" data-theorem="3">
                         <a href="theorem3.html">
                             <span class="theorem-number">3</span>
-                            <span class="theorem-nav-title">Angles in the Same Segment</span>
+                            <span class="theorem-nav-title" data-i18n="theorem3">Angles in the Same Segment</span>
                             <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </li>
                     <li class="theorem-nav-item" data-theorem="4">
                         <a href="theorem4.html">
                             <span class="theorem-number">4</span>
-                            <span class="theorem-nav-title">Cyclic Quadrilateral</span>
+                            <span class="theorem-nav-title" data-i18n="theorem4">Cyclic Quadrilateral</span>
                             <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </li>
                     <li class="theorem-nav-item" data-theorem="5">
                         <a href="theorem5.html">
                             <span class="theorem-number">5</span>
-                            <span class="theorem-nav-title">Radius to a Tangent</span>
+                            <span class="theorem-nav-title" data-i18n="theorem5">Radius to a Tangent</span>
                             <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </li>
                     <li class="theorem-nav-item" data-theorem="6">
                         <a href="theorem6.html">
                             <span class="theorem-number">6</span>
-                            <span class="theorem-nav-title">Tangents from a Point I</span>
+                            <span class="theorem-nav-title" data-i18n="theorem6">Tangents from a Point I</span>
                             <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </li>
                     <li class="theorem-nav-item active" data-theorem="7">
                         <a href="theorem7.html">
                             <span class="theorem-number">7</span>
-                            <span class="theorem-nav-title">Tangents from a Point II</span>
+                            <span class="theorem-nav-title" data-i18n="theorem7">Tangents from a Point II</span>
                             <span class="theorem-nav-icon"><i class="fas fa-check-circle"></i></span>
                         </a>
                     </li>
                     <li class="theorem-nav-item" data-theorem="8">
                         <a href="theorem8.html">
                             <span class="theorem-number">8</span>
-                            <span class="theorem-nav-title">Alternate Segment Theorem</span>
+                            <span class="theorem-nav-title" data-i18n="theorem8">Alternate Segment Theorem</span>
                             <span class="theorem-nav-icon"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </li>
                 </ul>
                 <div class="sidebar-footer">
-                    <a href="../game.html" class="sidebar-back-btn">
+                    <a href="../game.html" class="sidebar-back-btn" data-i18n="backToAll">
                         <i class="fas fa-th"></i> All Theorems
                     </a>
                 </div>
@@ -230,41 +230,41 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>Circle Planet</h4>
-                <p>Interactive Circle Theorem Learning Platform</p>
+                <h4 class="footer-brand" data-i18n="footerBrand">Circle Planet</h4>
+                <p class="footer-desc" data-i18n="footerDesc">Interactive Circle Theorem Learning Platform</p>
             </div>
             <div class="footer-section">
-                <h4>Quick Links</h4>
+                <h4 class="footer-title" data-i18n="footerQuickLinks">Quick Links</h4>
                 <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../game.html">Game</a></li>
-                    <li><a href="../quiz.html">Quiz</a></li>
+                    <li><a href="../index.html" class="footer-link" data-i18n="footerHome">Home</a></li>
+                    <li><a href="../game.html" class="footer-link" data-i18n="footerGame">Game</a></li>
+                    <li><a href="../quiz.html" class="footer-link" data-i18n="footerQuiz">Quiz</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Legal</h4>
+                <h4 class="footer-title" data-i18n="footerLegal">Legal</h4>
                 <ul>
-                    <li><a href="../privacy.html">Privacy Policy</a></li>
-                    <li><a href="../terms.html">Terms of Use</a></li>
-                    <li><a href="../cookies.html">Cookie Policy</a></li>
+                    <li><a href="../privacy.html" class="footer-link" data-i18n="footerPrivacy">Privacy Policy</a></li>
+                    <li><a href="../terms.html" class="footer-link" data-i18n="footerTerms">Terms of Use</a></li>
+                    <li><a href="../cookies.html" class="footer-link" data-i18n="footerCookies">Cookie Policy</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Accessibility</h4>
+                <h4 class="footer-title" data-i18n="footerAccessibility">Accessibility</h4>
                 <ul>
-                    <li><i class="fas fa-eye"></i> Colour-blind Friendly</li>
-                    <li><i class="fas fa-text-height"></i> Adjustable Font</li>
-                    <li><i class="fas fa-moon"></i> Dark Mode</li>
+                    <li><i class="fas fa-eye"></i> <span class="feature-item" data-i18n="footerColourBlind">Colour-blind Friendly</span></li>
+                    <li><i class="fas fa-text-height"></i> <span class="feature-item" data-i18n="footerFont">Adjustable Font</span></li>
+                    <li><i class="fas fa-moon"></i> <span class="feature-item" data-i18n="footerDarkMode">Dark Mode</span></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>© 2026 Circle Planet. All rights reserved.</p>
+            <p class="footer-copyright" data-i18n="footerCopyright">© 2026 Circle Planet. All rights reserved.</p>
             <p class="footer-features">
-                <span class="feature-tag">Colour-blind Friendly</span>
-                <span class="feature-tag">Mobile Responsive</span>
-                <span class="feature-tag">Bilingual Support</span>
-                <span class="feature-tag">Dark Mode</span>
+                <span class="feature-tag" data-i18n="featureColourBlind">Colour-blind Friendly</span>
+                <span class="feature-tag" data-i18n="featureMobile">Mobile Responsive</span>
+                <span class="feature-tag" data-i18n="featureBilingual">Bilingual Support</span>
+                <span class="feature-tag" data-i18n="featureDarkMode">Dark Mode</span>
             </p>
         </div>
     </footer>

@@ -14,6 +14,28 @@ let currentLang = localStorage.getItem('lang') || 'en';
 // 中英文文本映射
 const translations = {
     en: {
+        // 导航栏
+        logo: 'Circle Planet',
+        navHome: 'Home',
+        navGame: 'Game',
+        navQuiz: 'Quiz',
+        mobileHome: 'Home',
+        mobileGame: 'Game',
+        mobileQuiz: 'Quiz',
+        breadcrumbHome: 'Home',
+        breadcrumbGame: 'Interactive Theorems',
+        // 主内容区
+        breadcrumbCurrent: 'Tangents from a Point I',
+        detailTitle: 'Circle Theorem 6: Tangents from a Point I',
+        backBtn: 'Back to All Theorems',
+        infoTitle: 'How to Explore',
+        infoPoint1: 'Drag point <strong>B</strong> outside the circle.',
+        infoPoint2: 'Observe how the tangent lengths change.',
+        infoPoint3: 'Notice that <span class="formula">|CB| = |DB|</span> always.',
+        // 数据面板
+        lengthCB: 'Length |CB|',
+        lengthDB: 'Length |DB|',
+        // 边栏
         sidebarTitle: 'Theorems',
         backToAll: 'All Theorems',
         theorem1: 'Angle at the Centre',
@@ -24,11 +46,50 @@ const translations = {
         theorem6: 'Tangents from a Point I',
         theorem7: 'Tangents from a Point II',
         theorem8: 'Alternate Segment Theorem',
-        backBtn: 'Back to All Theorems',
-        lengthCB: 'Length |CB|',
-        lengthDB: 'Length |DB|'
+        // 页脚
+        footerBrand: 'Circle Planet',
+        footerDesc: 'Interactive Circle Theorem Learning Platform',
+        footerQuickLinks: 'Quick Links',
+        footerHome: 'Home',
+        footerGame: 'Game',
+        footerQuiz: 'Quiz',
+        footerLegal: 'Legal',
+        footerPrivacy: 'Privacy Policy',
+        footerTerms: 'Terms of Use',
+        footerCookies: 'Cookie Policy',
+        footerAccessibility: 'Accessibility',
+        footerColourBlind: 'Colour-blind Friendly',
+        footerFont: 'Adjustable Font',
+        footerDarkMode: 'Dark Mode',
+        footerCopyright: '© 2026 Circle Planet. All rights reserved.',
+        featureColourBlind: 'Colour-blind Friendly',
+        featureMobile: 'Mobile Responsive',
+        featureBilingual: 'Bilingual Support',
+        featureDarkMode: 'Dark Mode'
     },
     zh: {
+        // 导航栏
+        logo: 'Circle Planet',
+        navHome: '首页',
+        navGame: '游戏',
+        navQuiz: '测验',
+        mobileHome: '首页',
+        mobileGame: '游戏',
+        mobileQuiz: '测验',
+        breadcrumbHome: '首页',
+        breadcrumbGame: '交互定理',
+        // 主内容区
+        breadcrumbCurrent: '切线长定理 I',
+        detailTitle: '圆定理 6：切线长定理 I',
+        backBtn: '返回全部定理',
+        infoTitle: '如何探索',
+        infoPoint1: '拖动圆外的点 <strong>B</strong>。',
+        infoPoint2: '观察切线长度如何变化。',
+        infoPoint3: '注意这个固定关系：<span class="formula">|CB| = |DB|</span>。',
+        // 数据面板
+        lengthCB: '长度 |CB|',
+        lengthDB: '长度 |DB|',
+        // 边栏
         sidebarTitle: '定理列表',
         backToAll: '全部定理',
         theorem1: '圆心角',
@@ -39,9 +100,26 @@ const translations = {
         theorem6: '切线长定理 I',
         theorem7: '切线长定理 II',
         theorem8: '弦切角定理',
-        backBtn: '返回全部定理',
-        lengthCB: '长度 |CB|',
-        lengthDB: '长度 |DB|'
+        // 页脚
+        footerBrand: 'Circle Planet',
+        footerDesc: '交互式圆定理学习平台',
+        footerQuickLinks: '快速链接',
+        footerHome: '首页',
+        footerGame: '游戏',
+        footerQuiz: '测验',
+        footerLegal: '法律信息',
+        footerPrivacy: '隐私政策',
+        footerTerms: '使用条款',
+        footerCookies: 'Cookie 政策',
+        footerAccessibility: '无障碍功能',
+        footerColourBlind: '色盲友好',
+        footerFont: '可调节字体',
+        footerDarkMode: '深色模式',
+        footerCopyright: '© 2026 圆星球 版权所有 ',
+        featureColourBlind: '色盲友好',
+        featureMobile: '移动端适配',
+        featureBilingual: '双语支持',
+        featureDarkMode: '深色模式'
     }
 };
 
@@ -111,17 +189,78 @@ function updateLangButton() {
     const langBtn = document.getElementById('langBtn');
     const langText = langBtn ? langBtn.querySelector('span') : null;
     if (langText) {
-        langText.textContent = currentLang === 'en' ? 'EN' : '中';
+        langText.textContent = currentLang === 'en' ? '中' : 'EN';
     }
 }
 
 function applyTranslations() {
+    // 更新导航栏
+    const logo = document.querySelector('.logo-text[data-i18n="logo"]');
+    if (logo) logo.textContent = t('logo');
+
+    const navHome = document.querySelector('.nav-link[data-i18n="navHome"]');
+    if (navHome) navHome.textContent = t('navHome');
+
+    const navGame = document.querySelector('.nav-link[data-i18n="navGame"]');
+    if (navGame) navGame.textContent = t('navGame');
+
+    const navQuiz = document.querySelector('.nav-link[data-i18n="navQuiz"]');
+    if (navQuiz) navQuiz.textContent = t('navQuiz');
+
+    // 更新移动端菜单
+    const mobileHome = document.querySelector('.mobile-nav-link[data-i18n="mobileHome"]');
+    if (mobileHome) mobileHome.textContent = t('mobileHome');
+
+    const mobileGame = document.querySelector('.mobile-nav-link[data-i18n="mobileGame"]');
+    if (mobileGame) mobileGame.textContent = t('mobileGame');
+
+    const mobileQuiz = document.querySelector('.mobile-nav-link[data-i18n="mobileQuiz"]');
+    if (mobileQuiz) mobileQuiz.textContent = t('mobileQuiz');
+
+    // 更新面包屑导航
+    const breadcrumbHome = document.querySelector('[data-i18n="breadcrumbHome"]');
+    if (breadcrumbHome) breadcrumbHome.textContent = t('breadcrumbHome');
+
+    const breadcrumbGame = document.querySelector('[data-i18n="breadcrumbGame"]');
+    if (breadcrumbGame) breadcrumbGame.textContent = t('breadcrumbGame');
+
+    const breadcrumbCurrent = document.querySelector('.breadcrumb-current');
+    if (breadcrumbCurrent) breadcrumbCurrent.textContent = t('breadcrumbCurrent');
+
+    // 更新详情页标题
+    const detailTitle = document.querySelector('.detail-title');
+    if (detailTitle) detailTitle.textContent = t('detailTitle');
+
+    // 更新返回按钮
+    const backBtn = document.querySelector('.detail-header .btn');
+    if (backBtn) backBtn.innerHTML = '<i class="fas fa-arrow-left"></i> ' + t('backBtn');
+
+    // 更新说明区标题
+    const infoTitle = document.querySelector('.info-card h3');
+    if (infoTitle) infoTitle.innerHTML = '<i class="fas fa-lightbulb"></i> ' + t('infoTitle');
+
+    // 更新说明区列表项
+    const infoPoints = document.querySelectorAll('.info-card li');
+    const pointKeys = ['infoPoint1', 'infoPoint2', 'infoPoint3'];
+    infoPoints.forEach((point, index) => {
+        if (pointKeys[index]) point.innerHTML = t(pointKeys[index]);
+    });
+
+    // 更新数据面板标签
+    const lengthCBLabel = document.querySelector('.data-row .data-cb .data-label');
+    if (lengthCBLabel) lengthCBLabel.textContent = t('lengthCB');
+    const lengthDBLabel = document.querySelector('.data-row .data-db .data-label');
+    if (lengthDBLabel) lengthDBLabel.textContent = t('lengthDB');
+
+    // 更新边栏标题
     const sidebarTitle = document.querySelector('.sidebar-header h3 span');
     if (sidebarTitle) sidebarTitle.textContent = t('sidebarTitle');
 
-    const backBtn = document.querySelector('.sidebar-back-btn');
-    if (backBtn) backBtn.innerHTML = '<i class="fas fa-th"></i> ' + t('backToAll');
+    // 更新边栏返回按钮
+    const sidebarBackBtn = document.querySelector('.sidebar-back-btn');
+    if (sidebarBackBtn) sidebarBackBtn.innerHTML = '<i class="fas fa-th"></i> ' + t('backToAll');
 
+    // 更新定理导航标题
     const theoremTitles = document.querySelectorAll('.theorem-nav-title');
     const titleKeys = ['theorem1', 'theorem2', 'theorem3', 'theorem4', 'theorem5', 'theorem6', 'theorem7', 'theorem8'];
     theoremTitles.forEach((title, index) => {
@@ -130,35 +269,125 @@ function applyTranslations() {
         }
     });
 
-    const lengthCBLabel = document.querySelector('.data-row .data-cb .data-label');
-    if (lengthCBLabel) lengthCBLabel.textContent = t('lengthCB');
-    const lengthDBLabel = document.querySelector('.data-row .data-db .data-label');
-    if (lengthDBLabel) lengthDBLabel.textContent = t('lengthDB');
+    // 更新页脚
+    const footerBrand = document.querySelector('[data-i18n="footerBrand"]');
+    if (footerBrand) footerBrand.textContent = t('footerBrand');
+
+    const footerDesc = document.querySelector('[data-i18n="footerDesc"]');
+    if (footerDesc) footerDesc.textContent = t('footerDesc');
+
+    const footerQuickLinks = document.querySelector('[data-i18n="footerQuickLinks"]');
+    if (footerQuickLinks) footerQuickLinks.textContent = t('footerQuickLinks');
+
+    const footerHome = document.querySelector('[data-i18n="footerHome"]');
+    if (footerHome) footerHome.textContent = t('footerHome');
+
+    const footerGame = document.querySelector('[data-i18n="footerGame"]');
+    if (footerGame) footerGame.textContent = t('footerGame');
+
+    const footerQuiz = document.querySelector('[data-i18n="footerQuiz"]');
+    if (footerQuiz) footerQuiz.textContent = t('footerQuiz');
+
+    const footerLegal = document.querySelector('[data-i18n="footerLegal"]');
+    if (footerLegal) footerLegal.textContent = t('footerLegal');
+
+    const footerPrivacy = document.querySelector('[data-i18n="footerPrivacy"]');
+    if (footerPrivacy) footerPrivacy.textContent = t('footerPrivacy');
+
+    const footerTerms = document.querySelector('[data-i18n="footerTerms"]');
+    if (footerTerms) footerTerms.textContent = t('footerTerms');
+
+    const footerCookies = document.querySelector('[data-i18n="footerCookies"]');
+    if (footerCookies) footerCookies.textContent = t('footerCookies');
+
+    const footerAccessibility = document.querySelector('[data-i18n="footerAccessibility"]');
+    if (footerAccessibility) footerAccessibility.textContent = t('footerAccessibility');
+
+    const footerColourBlind = document.querySelector('[data-i18n="footerColourBlind"]');
+    if (footerColourBlind) footerColourBlind.textContent = t('footerColourBlind');
+
+    const footerFont = document.querySelector('[data-i18n="footerFont"]');
+    if (footerFont) footerFont.textContent = t('footerFont');
+
+    const footerDarkMode = document.querySelector('[data-i18n="footerDarkMode"]');
+    if (footerDarkMode) footerDarkMode.textContent = t('footerDarkMode');
+
+    const footerCopyright = document.querySelector('[data-i18n="footerCopyright"]');
+    if (footerCopyright) footerCopyright.textContent = t('footerCopyright');
+
+    const featureColourBlind = document.querySelector('[data-i18n="featureColourBlind"]');
+    if (featureColourBlind) featureColourBlind.textContent = t('featureColourBlind');
+
+    const featureMobile = document.querySelector('[data-i18n="featureMobile"]');
+    if (featureMobile) featureMobile.textContent = t('featureMobile');
+
+    const featureBilingual = document.querySelector('[data-i18n="featureBilingual"]');
+    if (featureBilingual) featureBilingual.textContent = t('featureBilingual');
+
+    const featureDarkMode = document.querySelector('[data-i18n="featureDarkMode"]');
+    if (featureDarkMode) featureDarkMode.textContent = t('featureDarkMode');
 }
 
 // ========================================
-// 深色模式功能
+// 深色模式功能（使用 script.js 的实现）
 // ========================================
 function initTheme() {
     const themeBtn = document.getElementById('themeBtn');
-    const savedTheme = localStorage.getItem('theme') || 'light';
 
+    // Check if button exists
+    if (!themeBtn) {
+        return;
+    }
+
+    // 防止重复初始化：如果已经初始化过，直接同步图标状态并返回
+    if (window.themeInitialized) {
+        updateThemeIcon();
+        return;
+    }
+
+    // 标记为已初始化
+    window.themeInitialized = true;
+
+    // Check saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+
+    // Initialize theme based on saved preference or system setting
+    function applyTheme(isDark) {
+        if (isDark) {
+            document.body.setAttribute('data-theme', 'dark');
+        } else {
+            document.body.removeAttribute('data-theme');
+        }
+        updateThemeIcon(isDark);
+    }
+
+    // Apply saved theme or check system preference
     if (savedTheme === 'dark') {
-        document.body.setAttribute('data-theme', 'dark');
-        updateThemeIcon(true);
+        applyTheme(true);
+    } else if (savedTheme === 'light') {
+        applyTheme(false);
+    } else {
+        // Check system preference
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(prefersDark);
     }
 
-    if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
-            const isDark = document.body.toggleAttribute('data-theme');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            updateThemeIcon(isDark);
-        });
-    }
+    // Toggle theme on click
+    themeBtn.addEventListener('click', () => {
+        const hasDarkTheme = document.body.hasAttribute('data-theme');
+        const newIsDark = !hasDarkTheme;
 
+        applyTheme(newIsDark);
+        localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
+    });
+
+    // Update button icon
     function updateThemeIcon(isDark) {
         if (themeBtn) {
-            themeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            const themeIsDark = isDark !== undefined ? isDark : document.body.hasAttribute('data-theme');
+            themeBtn.innerHTML = themeIsDark
+                ? '<i class="fas fa-sun"></i>'
+                : '<i class="fas fa-moon"></i>';
         }
     }
 }
