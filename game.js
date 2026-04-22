@@ -185,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initMobileMenu();     // 移动端菜单
     initBackToTop();      // 返回顶部
     initCardNavigation(); // 卡片点击跳转
+    initMusicControl();   // 背景音乐控制
 
     // 应用初始语言
     applyTranslations();
@@ -468,4 +469,90 @@ function initCardNavigation() {
             });
         }
     });
+}
+
+// ========================================
+// 背景音乐控制
+// ========================================
+let backgroundMusic = null;
+let isMusicPlaying = false;
+
+function initMusicControl() {
+    const musicBtn = document.getElementById('musicBtn');
+
+    if (!musicBtn) {
+        console.error('Music button not found!');
+        return;
+    }
+
+    // 初始化音频
+    backgroundMusic = new Audio('background.wav');
+    backgroundMusic.loop = true;
+    backgroundMusic.volume = 0.3;
+
+    // 检查本地存储的音乐状态
+    const savedMusicState = localStorage.getItem('musicEnabled');
+    if (savedMusicState === 'true') {
+        backgroundMusic.play().then(() => {
+            isMusicPlaying = true;
+        }).catch(e => {
+            console.log('Music autoplay prevented');
+            isMusicPlaying = false;
+        }).finally(() => {
+            updateMusicIcon();
+        });
+    } else {
+        updateMusicIcon();
+    }
+
+    // 点击按钮切换音乐
+    musicBtn.addEventListener('click', () => {
+        if (isMusicPlaying) {
+            backgroundMusic.pause();
+            isMusicPlaying = false;
+            localStorage.setItem('musicEnabled', 'false');
+            updateMusicIcon();
+        } else {
+            backgroundMusic.play().then(() => {
+                isMusicPlaying = true;
+                localStorage.setItem('musicEnabled', 'true');
+                updateMusicIcon();
+            }).catch(e => {
+                console.log('Music playback failed');
+                updateMusicIcon();
+            });
+        }
+    });
+
+    // 页面可见性变化时处理音乐
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && isMusicPlaying) {
+            backgroundMusic.pause();
+        } else if (!document.hidden && isMusicPlaying) {
+            backgroundMusic.play().catch(e => {
+                console.log('Music resume failed');
+            });
+        }
+    });
+}
+
+function updateMusicIcon() {
+    const musicBtn = document.getElementById('musicBtn');
+    if (!musicBtn) return;
+
+    // 找到按钮内的图标元素，只更新图标的class
+    const icon = musicBtn.querySelector('i');
+    if (icon) {
+        if (isMusicPlaying) {
+            icon.className = 'fas fa-volume-up';
+        } else {
+            icon.className = 'fas fa-volume-mute';
+        }
+    }
+}
+// ========================================
+// 禁用 Toast 通知 (覆盖 script.js 中的 showNotification)
+// ========================================
+function showNotification(message, type) {
+    // 什么都不做，禁用所有 toast 通知
 }
