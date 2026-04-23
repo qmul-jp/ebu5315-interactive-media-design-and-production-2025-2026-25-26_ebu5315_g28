@@ -7,39 +7,75 @@ document.addEventListener('DOMContentLoaded', function () {
     initQuiz();
     initSound();
     initSoundToggle();
+    initParticles();
+    initBeforeUnload();
 });
 
 // ========================================
-// 音效系统 - Web Audio API
+// 页面离开警告
 // ========================================
-let audioContext = null;
-let soundEnabled = true;
+let quizInProgress = false;
 
-// 音效开关功能
-function initSoundToggle() {
-    const soundBtn = document.getElementById('soundBtn');
-    // 从 localStorage 读取设置
-    soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
-    updateSoundIcon();
-
-    soundBtn.addEventListener('click', () => {
-        soundEnabled = !soundEnabled;
-        localStorage.setItem('soundEnabled', soundEnabled);
-        updateSoundIcon();
-        if (soundEnabled) {
-            playSound('click'); // 开启时播放提示音
+function initBeforeUnload() {
+    // 设置 beforeunload 事件监听器
+    window.addEventListener('beforeunload', function(e) {
+        if (quizInProgress) {
+            // 显示确认对话框
+            const message = currentLang === 'zh'
+                ? '您正在进行测验，确定要离开吗？您的进度将会丢失。'
+                : 'You are in the middle of a quiz. Are you sure you want to leave? Your progress will be lost.';
+            e.preventDefault();
+            e.returnValue = message;
+            return message;
         }
     });
 }
 
-function updateSoundIcon() {
-    const soundBtn = document.getElementById('soundBtn');
-    const icon = soundBtn.querySelector('i');
-    if (soundEnabled) {
-        icon.className = 'fas fa-volume-up';
-    } else {
-        icon.className = 'fas fa-volume-mute';
-    }
+function setQuizInProgress(inProgress) {
+    quizInProgress = inProgress;
+}
+
+// ========================================
+// 音效和背景音乐系统 (合并控制)
+// ========================================
+let audioContext = null;
+let backgroundMusic = null;
+let soundEnabled = true;
+let musicPlaying = false;
+
+// 默认开启音乐和音效（如果localStorage中没有设置）
+if (localStorage.getItem('soundEnabled') === null) {
+    soundEnabled = true;
+    localStorage.setItem('soundEnabled', 'true');
+} else {
+    soundEnabled = localStorage.getItem('soundEnabled') === 'true';
+}
+
+function initSoundToggle() {
+    const musicBtn = document.getElementById('musicBtn');
+    updateSoundIcon();
+
+    // 初始化音频对象（音效）
+    musicBtn.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        localStorage.setItem('soundEnabled', soundEnabled);
+        updateSoundIcon();
+
+        if (soundEnabled) {
+            playSound('click'); // 开启时播放提示音
+            // 恢复背景音乐
+            if (backgroundMusic) {
+                backgroundMusic.play().catch(e => console.log('Music resume failed:', e));
+                musicPlaying = true;
+            }
+        } else {
+            // 暂停背景音乐
+            if (backgroundMusic) {
+                backgroundMusic.pause();
+                musicPlaying = false;
+            }
+        }
+    });
 }
 
 function initSound() {
@@ -49,6 +85,66 @@ function initSound() {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
     }, { once: true });
+
+    // 初始化背景音乐
+    initMusic();
+}
+
+function initMusic() {
+    backgroundMusic = new Audio('background.wav');
+    backgroundMusic.loop = true; // 循环播放
+    backgroundMusic.volume = 0.3; // 设置音量
+
+    // 尝试播放音乐（可能被浏览器阻止）
+    if (soundEnabled) {
+        backgroundMusic.play().then(() => {
+            musicPlaying = true;
+        }).catch(() => {
+            // 音乐被阻止，等待用户首次交互后播放
+        });
+    }
+
+    // 监听用户首次交互，自动播放音乐
+    const autoPlayHandler = () => {
+        if (soundEnabled && !musicPlaying && backgroundMusic) {
+            backgroundMusic.play().then(() => {
+                musicPlaying = true;
+            }).catch(() => {});
+        }
+        document.removeEventListener('click', autoPlayHandler);
+        document.removeEventListener('touchstart', autoPlayHandler);
+        document.removeEventListener('keydown', autoPlayHandler);
+    };
+    document.addEventListener('click', autoPlayHandler, { once: true });
+    document.addEventListener('touchstart', autoPlayHandler, { once: true });
+    document.addEventListener('keydown', autoPlayHandler, { once: true });
+}
+
+function updateSoundIcon() {
+    const musicBtn = document.getElementById('musicBtn');
+    if (!musicBtn) return;
+
+    const icon = musicBtn.querySelector('i');
+    if (soundEnabled) {
+        icon.className = 'fas fa-music';  // 开启时显示音乐图标
+        musicBtn.classList.remove('muted');
+    } else {
+        icon.className = 'fas fa-volume-mute';  // 关闭时显示静音图标
+        musicBtn.classList.add('muted');
+    }
+
+    // 同步移动端音乐按钮
+    const musicBtnMobile = document.getElementById('musicBtnMobile');
+    if (musicBtnMobile) {
+        const mobileIcon = musicBtnMobile.querySelector('i');
+        if (soundEnabled) {
+            mobileIcon.className = 'fas fa-music';
+            musicBtnMobile.classList.remove('muted');
+        } else {
+            mobileIcon.className = 'fas fa-volume-mute';
+            musicBtnMobile.classList.add('muted');
+        }
+    }
 }
 
 // 播放音效函数
@@ -238,11 +334,35 @@ const translations = {
         home: 'Home',
         game: 'Game',
         quiz: 'Quiz',
+        // Footer link translations
+        footerHome: 'Home',
+        footerGame: 'Game',
+        footerQuiz: 'Quiz',
+        footerPrivacy: 'Privacy Policy',
+        footerTerms: 'Terms of Use',
+        footerCookies: 'Cookie Policy',
         perfectScore: "Perfect Score! You're a Circle Theorem Master!",
         greatJob: 'Great job! You passed the quiz!',
         greatJobSub: 'Keep practicing to get even better.',
         keepPracticing: 'Keep practicing! You\'ll get there.',
-        reviewMistakes: 'Review the mistakes and try again.'
+        reviewMistakes: 'Review the mistakes and try again.',
+        // Footer translations
+        footerTitle: 'Circle Planet',
+        footerDesc: 'Interactive Circle Theorem Learning Platform',
+        footerLinks: 'Quick Links',
+        footerLegal: 'Legal',
+        footerAccessibility: 'Accessibility',
+        privacy: 'Privacy Policy',
+        terms: 'Terms of Use',
+        cookies: 'Cookie Policy',
+        colourBlind: 'Colour-blind Friendly',
+        adjustableFont: 'Adjustable Font',
+        darkMode: 'Dark Mode',
+        copyright: 'All rights reserved.',
+        featureColourBlind: 'Colour-blind Friendly',
+        featureMobile: 'Mobile Responsive',
+        featureBilingual: 'Bilingual Support',
+        featureDark: 'Dark Mode'
     },
     zh: {
         quizTitle: '圆定理测验',
@@ -272,11 +392,35 @@ const translations = {
         home: '主页',
         game: '游戏',
         quiz: '测验',
+        // Footer link translations
+        footerHome: '主页',
+        footerGame: '游戏',
+        footerQuiz: '测验',
+        footerPrivacy: '隐私政策',
+        footerTerms: '使用条款',
+        footerCookies: 'Cookie政策',
         perfectScore: '满分！你就是圆定理大师！',
         greatJob: '太棒了！你通过了测验！',
         greatJobSub: '继续练习，你会做得更好。',
         keepPracticing: '继续加油！你一定可以的。',
-        reviewMistakes: '复习错题再试一次。'
+        reviewMistakes: '复习错题再试一次。',
+        // Footer translations
+        footerTitle: 'Circle Planet',
+        footerDesc: '互动圆定理学习平台',
+        footerLinks: '快速链接',
+        footerLegal: '法律信息',
+        footerAccessibility: '无障碍功能',
+        privacy: '隐私政策',
+        terms: '使用条款',
+        cookies: 'Cookie政策',
+        colourBlind: '色盲友好',
+        adjustableFont: '可调节字体',
+        darkMode: '深色模式',
+        copyright: '版权所有。',
+        featureColourBlind: '色盲友好',
+        featureMobile: '移动端适配',
+        featureBilingual: '双语支持',
+        featureDark: '深色模式'
     }
 };
 
@@ -301,435 +445,7 @@ function t(key) {
     return translations[currentLang][key] || translations['en'][key] || key;
 }
 
-// 题目库（来自 questions.js）- 支持中英文
-const questionBank = {
-
-easy: [
-
-{
-id:1,
-question_en:"The angle at the center of a circle is ____ the angle at the circumference.",
-question_zh:"圆心角的度数是圆周角的____。",
-options_en:["half","equal to","twice","three times"],
-options_zh:["一半","相等","两倍","三倍"],
-answer_en:"twice",
-answer_zh:"两倍",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="150" y1="150" x2="230" y2="80" stroke="#f59e0b" stroke-width="3"/>
-<line x1="150" y1="150" x2="70" y2="80" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:2,
-question_en:"A line from the center to the circle is called a ____.",
-question_zh:"从圆心到圆上的连线叫做____。",
-options_en:["diameter","radius","chord","arc"],
-options_zh:["直径","半径","弦","弧"],
-answer_en:"radius",
-answer_zh:"半径",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="150" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:3,
-question_en:"A line passing through the center and touching both sides of the circle is a ____.",
-question_zh:"经过圆心并与圆相交于两点的线段是____。",
-options_en:["radius","arc","diameter","tangent"],
-options_zh:["半径","弧","直径","切线"],
-answer_en:"diameter",
-answer_zh:"直径",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="50" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:4,
-question_en:"A line that touches the circle at exactly one point is called a ____.",
-question_zh:"只与圆相交于一点的直线叫做____。",
-options_en:["tangent","diameter","chord","radius"],
-options_zh:["切线","直径","弦","半径"],
-answer_en:"tangent",
-answer_zh:"切线",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="20" y1="250" x2="280" y2="250" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:5,
-question_en:"All radii of the same circle are ____.",
-question_zh:"同一个圆的所有半径都____。",
-options_en:["different","equal","random","curved"],
-options_zh:["不同","相等","随机","弯曲"],
-answer_en:"equal",
-answer_zh:"相等",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="150" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
-<line x1="150" y1="150" x2="70" y2="80" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:6,
-question_en:"A straight line joining two points on a circle is called a ____.",
-question_zh:"连接圆上两点的直线叫做____。",
-options_en:["chord","radius","tangent","arc"],
-options_zh:["弦","半径","切线","弧"],
-answer_en:"chord",
-answer_zh:"弦",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="80" y1="80" x2="220" y2="80" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:7,
-question_en:"Half of a circle is called a ____.",
-question_zh:"圆的一半叫做____。",
-options_en:["arc","radius","semicircle","chord"],
-options_zh:["弧","半径","半圆","弦"],
-answer_en:"semicircle",
-answer_zh:"半圆",
-svg:`<svg viewBox="0 0 300 300">
-<path d="M50 150 A100 100 0 0 1 250 150" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-},
-
-{
-id:8,
-question_en:"The distance around a circle is called ____.",
-question_zh:"圆一周的长度叫做____。",
-options_en:["diameter","area","circumference","radius"],
-options_zh:["直径","面积","周长","半径"],
-answer_en:"circumference",
-answer_zh:"周长",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#f59e0b" stroke-width="4" fill="none"/>
-</svg>`
-},
-
-{
-id:9,
-question_en:"The center of a circle is the point ____.",
-question_zh:"圆心是____的点。",
-options_en:["on the edge","in the middle","outside","on a line"],
-options_zh:["在边上","在中间","在外面","在线上"],
-answer_en:"in the middle",
-answer_zh:"在中间",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<circle cx="150" cy="150" r="6" fill="#4f46e5"/>
-</svg>`
-},
-
-{
-id:10,
-question_en:"Two radii form an angle at the ____.",
-question_zh:"两条半径在____形成角。",
-options_en:["edge","center","diameter","arc"],
-options_zh:["边上","圆心","直径","弧"],
-answer_en:"center",
-answer_zh:"圆心",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="150" y1="150" x2="230" y2="80" stroke="#f59e0b" stroke-width="3"/>
-<line x1="150" y1="150" x2="80" y2="80" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-}
-
-],
-
-medium:[
-
-{
-id:1,
-question_en:"Angles in the same segment of a circle are ____.",
-question_zh:"同弧所对的圆周角____。",
-options_en:["equal","double","random","half"],
-options_zh:["相等","两倍","随机","一半"],
-answer_en:"equal",
-answer_zh:"相等",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="70" y1="80" x2="230" y2="80" stroke="#4f46e5" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:2,
-question_en:"The angle in a semicircle is ____.",
-question_zh:"半圆所对的圆周角是____。",
-options_en:["45°","60°","90°","180°"],
-options_zh:["45°","60°","90°","180°"],
-answer_en:"90°",
-answer_zh:"90°",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="50" y1="150" x2="250" y2="150" stroke="#4f46e5" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:3,
-question_en:"A tangent is ____ to the radius at the point of contact.",
-question_zh:"切线在切点处____于半径。",
-options_en:["parallel","equal","perpendicular","random"],
-options_zh:["平行","相等","垂直","随机"],
-answer_en:"perpendicular",
-answer_zh:"垂直",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="150" y1="150" x2="250" y2="150" stroke="#4f46e5" stroke-width="3"/>
-<line x1="250" y1="150" x2="250" y2="50" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:4,
-question_en:"Opposite angles of a cyclic quadrilateral sum to ____.",
-question_zh:"圆内接四边形的对角之和等于____。",
-options_en:["90°","180°","270°","360°"],
-options_zh:["90°","180°","270°","360°"],
-answer_en:"180°",
-answer_zh:"180°",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-},
-
-{
-id:5,
-question_en:"Equal chords are ____ from the center.",
-question_zh:"相等的弦到圆心的距离____。",
-options_en:["nearer","equidistant","random","farther"],
-options_zh:["更近","相等","随机","更远"],
-answer_en:"equidistant",
-answer_zh:"相等",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="80" y1="80" x2="220" y2="80" stroke="#f59e0b" stroke-width="3"/>
-<line x1="80" y1="220" x2="220" y2="220" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:6,
-question_en:"The perpendicular from the center to a chord ____ the chord.",
-question_zh:"从圆心到弦的垂线____弦。",
-options_en:["bisects","touches","crosses","extends"],
-options_zh:["平分","接触","穿过","延长"],
-answer_en:"bisects",
-answer_zh:"平分",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="80" y1="100" x2="220" y2="100" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:7,
-question_en:"Angles subtended by the same arc are ____.",
-question_zh:"同弧所对的圆周角____。",
-options_en:["equal","double","random","half"],
-options_zh:["相等","两倍","随机","一半"],
-answer_en:"equal",
-answer_zh:"相等",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-},
-
-{
-id:8,
-question_en:"The longest chord of a circle is the ____.",
-question_zh:"圆最长的弦是____。",
-options_en:["arc","radius","diameter","tangent"],
-options_zh:["弧","半径","直径","切线"],
-answer_en:"diameter",
-answer_zh:"直径",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="50" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:9,
-question_en:"A diameter divides the circle into ____ equal parts.",
-question_zh:"直径把圆分成____等份。",
-options_en:["1","2","3","4"],
-options_zh:["1","2","3","4"],
-answer_en:"2",
-answer_zh:"2",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="50" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-},
-
-{
-id:10,
-question_en:"The radius is ____ the diameter.",
-question_zh:"半径是直径的____。",
-options_en:["half of","equal to","twice","triple"],
-options_zh:["一半","相等","两倍","三倍"],
-answer_en:"half of",
-answer_zh:"一半",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="150" y1="150" x2="250" y2="150" stroke="#f59e0b" stroke-width="3"/>
-</svg>`
-}
-
-],
-
-hard:[
-
-{
-id:1,
-question_en:"If the central angle is 120°, the angle at the circumference is ____.",
-question_zh:"如果圆心角是120°，则圆周角是____。",
-options_en:["30°","60°","90°","120°"],
-options_zh:["30°","60°","90°","120°"],
-answer_en:"60°",
-answer_zh:"60°",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-},
-
-{
-id:2,
-question_en:"Angles in the same segment are ____.",
-question_zh:"同弧所对的圆周角____。",
-options_en:["equal","double","random","opposite"],
-options_zh:["相等","两倍","随机","相反"],
-answer_en:"equal",
-answer_zh:"相等",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-},
-
-{
-id:3,
-question_en:"If radius is 5, diameter is ____.",
-question_zh:"如果半径是5，则直径是____。",
-options_en:["5","8","10","12"],
-options_zh:["5","8","10","12"],
-answer_en:"10",
-answer_zh:"10",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="80" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-},
-
-{
-id:4,
-question_en:"The angle between tangent and radius is ____.",
-question_zh:"切线和半径之间的夹角是____。",
-options_en:["30°","60°","90°","120°"],
-options_zh:["30°","60°","90°","120°"],
-answer_en:"90°",
-answer_zh:"90°",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-},
-
-{
-id:5,
-question_en:"The diameter is ____ the radius.",
-question_zh:"直径是半径的____。",
-options_en:["half","equal","twice","triple"],
-options_zh:["一半","相等","两倍","三倍"],
-answer_en:"twice",
-answer_zh:"两倍",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-},
-
-{
-id:6,
-question_en:"The center of a circle is equidistant from all ____.",
-question_zh:"圆心到____的所有点的距离相等。",
-options_en:["points on the circle","lines","diameters","angles"],
-options_zh:["圆上的点","线","直径","角"],
-answer_en:"points on the circle",
-answer_zh:"圆上的点",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-},
-
-{
-id:7,
-question_en:"An arc is part of the ____.",
-question_zh:"弧是____的一部分。",
-options_en:["circle","radius","diameter","center"],
-options_zh:["圆","半径","直径","圆心"],
-answer_en:"circle",
-answer_zh:"圆",
-svg:`<svg viewBox="0 0 300 300">
-<path d="M80 220 A100 100 0 0 1 220 220" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-},
-
-{
-id:8,
-question_en:"Two diameters always intersect at the ____.",
-question_zh:"两条直径总在____相交。",
-options_en:["edge","center","arc","random point"],
-options_zh:["边上","圆心","弧","随机点"],
-answer_en:"center",
-answer_zh:"圆心",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-<line x1="50" y1="150" x2="250" y2="150" stroke="#f59e0b"/>
-<line x1="150" y1="50" x2="150" y2="250" stroke="#f59e0b"/>
-</svg>`
-},
-
-{
-id:9,
-question_en:"A tangent touches the circle at ____ point.",
-question_zh:"切线与圆相切于____点。",
-options_en:["one","two","three","four"],
-options_zh:["一","两","三","四"],
-answer_en:"one",
-answer_zh:"一",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-},
-
-{
-id:10,
-question_en:"If diameter is 20, radius is ____.",
-question_zh:"如果直径是20，则半径是____。",
-options_en:["5","10","15","20"],
-options_zh:["5","10","15","20"],
-answer_en:"10",
-answer_zh:"10",
-svg:`<svg viewBox="0 0 300 300">
-<circle cx="150" cy="150" r="100" stroke="#4f46e5" stroke-width="3" fill="none"/>
-</svg>`
-}
-
-]
-
-};
+// 题目库已移至 question.js
 
 let currentQuestions = [];
 let currentQuestionIndex = 0;
@@ -740,6 +456,8 @@ let wrongQuestions = [];
 let timerInterval = null;
 let timeLeft = 30;
 let questionTimes = [];
+let originalTotalQuestions = 5;
+let isReviewMode = false;
 
 function initQuiz() {
     const quizSelection = document.getElementById('quizSelection');
@@ -792,8 +510,14 @@ function initQuiz() {
         const opts = document.querySelectorAll('.option-btn');
         opts.forEach(o => o.disabled = true);
         opts.forEach(o => {
-            if (o.querySelector('.option-text').innerText === correctAnswer) o.classList.add('correct');
-            else if (o === sel) o.classList.add('wrong');
+            const letterSpan = o.querySelector('.option-letter');
+            if (o.querySelector('.option-text').innerText === correctAnswer) {
+                o.classList.add('correct');
+                letterSpan.innerHTML = '<i class="fas fa-check"></i>'; // 添加对勾图标
+            } else if (o === sel) {
+                o.classList.add('wrong');
+                letterSpan.innerHTML = '<i class="fas fa-times"></i>'; // 添加X图标
+            }
         });
         const isCorrect = userAnswer === correctAnswer;
         showFeedback(isCorrect);
@@ -811,11 +535,16 @@ function initQuiz() {
             const qid = currentQuestions[currentQuestionIndex].id;
             if (!userAnswers[qid]) startTimer();
         } else {
-            wrongQuestions = currentQuestions.filter(q => userAnswers[q.id] !== q.answer);
+            // 根据当前语言判断错题
+            wrongQuestions = currentQuestions.filter(q => {
+                const correctAnswer = currentLang === 'zh' ? q.answer_zh : q.answer_en;
+                return userAnswers[q.id] !== correctAnswer;
+            });
             quizGame.style.display = 'none';
             quizResult.style.display = 'block';
             window.scrollTo(0, 0);
             showResults();
+            setQuizInProgress(false); // 禁用离开页面警告
         }
     });
 
@@ -837,6 +566,7 @@ function initQuiz() {
         document.getElementById('quiz-top-header').style.display = 'block';
         diffBtns.forEach(b => b.classList.remove('active'));
         startBtn.disabled = true;
+        setQuizInProgress(false); // 禁用离开页面警告
         selectedLevel = null;
         difficultyInfoEl.className = 'difficulty-info';
         difficultyInfoEl.innerHTML = '<p>' + t('difficultyInfo') + '</p>';
@@ -849,6 +579,11 @@ function initQuiz() {
         currentQuestions = wrongQuestions;
         currentQuestionIndex = 0;
         questionTimes = [];
+        // Reset correct count for review session
+        correctCount = 0;
+        userAnswers = {}; // Also reset user answers
+        isReviewMode = true; // Mark as review mode
+        document.getElementById('currentScore').innerText = '0';
         quizResult.style.display = 'none';
         quizGame.style.display = 'block';
         renderCurrentQuestion(true);
@@ -892,6 +627,8 @@ function startQuizByLevel() {
     correctCount = 0;
     wrongQuestions = [];
     questionTimes = [];
+    originalTotalQuestions = currentQuestions.length; // Store original total
+    isReviewMode = false; // Not in review mode
     document.getElementById('currentScore').innerText = '0';
     quizSelection.style.display = 'none';
     quizResult.style.display = 'none';
@@ -900,6 +637,7 @@ function startQuizByLevel() {
     playSound('start'); // 游戏开始音效
     renderCurrentQuestion(true);
     startTimer();
+    setQuizInProgress(true); // 启用离开页面警告
 }
 
 function startTimer() {
@@ -983,6 +721,10 @@ function renderCurrentQuestion(slideDirection) {
         btn.disabled = false;
     });
 
+    // Always enable checkBtn when rendering a new question
+    const checkBtn = document.getElementById('checkBtn');
+    checkBtn.disabled = false;
+
     const total = currentQuestions.length;
     if (currentLang === 'zh') {
         document.getElementById('stepText').innerText = '第 ' + (currentQuestionIndex + 1) + ' 题，共 ' + total + ' 题';
@@ -996,7 +738,8 @@ function renderCurrentQuestion(slideDirection) {
 }
 
 function showResults() {
-    const total = currentQuestions.length;
+    // If in review mode, display results based on current questions (wrong questions review)
+    const total = isReviewMode ? currentQuestions.length : originalTotalQuestions;
     const resultScore = document.getElementById('resultScore');
     const resultReview = document.getElementById('resultReview');
     const resultCard = document.querySelector('.result-card');
@@ -1083,18 +826,37 @@ function initTheme() {
     const themeBtn = document.getElementById('themeBtn');
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.body.classList.add(savedTheme);
+    // Also set data-theme attribute for styles.css compatibility
+    document.body.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
+
+    // 初始化时检查是否为暗色模式，启动流星效果
+    if (savedTheme === 'dark') {
+        toggleShootingStars(true);
+    }
+
     themeBtn.addEventListener('click', () => {
         const currentTheme = document.body.classList.contains('dark') ? 'dark' : 'light';
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         document.body.classList.remove(currentTheme);
         document.body.classList.add(newTheme);
+        // Also update data-theme attribute
+        document.body.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         updateThemeIcon(newTheme);
+        // Update particles color for dark/light mode
+        updateParticlesColor();
+        toggleShootingStars(newTheme === 'dark');
     });
     function updateThemeIcon(theme) {
         const icon = themeBtn.querySelector('i');
         icon.className = 'fas fa-' + (theme === 'dark' ? 'sun' : 'moon');
+        // 更新移动端主题按钮
+        const themeBtnMobile = document.getElementById('themeBtnMobile');
+        if (themeBtnMobile) {
+            const mobileIcon = themeBtnMobile.querySelector('i');
+            mobileIcon.className = 'fas fa-' + (theme === 'dark' ? 'sun' : 'moon');
+        }
     }
 }
 
@@ -1111,23 +873,90 @@ function initFontSize() {
             localStorage.setItem('fontSize', size);
         });
     });
-    function applyFontSize(size) { const sizes = { s: '14px', m: '16px', l: '18px' }; document.body.style.fontSize = sizes[size] || '16px'; }
+    function applyFontSize(size) {
+        const sizes = { s: '14px', m: '16px', l: '18px' };
+        document.documentElement.style.fontSize = sizes[size] || '16px';
+    }
 }
 
 function initMobileMenu() {
     const menuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-    menuBtn.addEventListener('click', () => {
+
+    // 防止移动端点击穿透
+    mobileMenu.style.pointerEvents = 'auto';
+
+    // 汉堡菜单按钮点击
+    const toggleMobileMenu = (e) => {
+        e.stopPropagation();
+        const isActive = mobileMenu.classList.contains('active');
         mobileMenu.classList.toggle('active');
         const icon = menuBtn.querySelector('i');
-        icon.className = mobileMenu.classList.contains('active') ? 'fas fa-times' : 'fas fa-bars';
-    });
+        icon.className = isActive ? 'fas fa-bars' : 'fas fa-times';
+    };
+
+    menuBtn.addEventListener('click', toggleMobileMenu);
+
+    // 点击菜单外部关闭菜单
     document.addEventListener('click', (e) => {
         if (!menuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
             mobileMenu.classList.remove('active');
             menuBtn.querySelector('i').className = 'fas fa-bars';
         }
     });
+
+    // 触摸事件支持（移动端）
+    menuBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        toggleMobileMenu(e);
+    });
+
+    // 点击菜单内链接后关闭菜单
+    const mobileNavLinks = mobileMenu.querySelectorAll('.mobile-nav-link');
+    mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            menuBtn.querySelector('i').className = 'fas fa-bars';
+        });
+    });
+
+    // 点击菜单内功能按钮（不关闭菜单）
+    const mobileFunctions = mobileMenu.querySelectorAll('.mobile-btn');
+    mobileFunctions.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    });
+
+    // 移动端语言切换按钮
+    const langBtnMobile = document.getElementById('langBtnMobile');
+    if (langBtnMobile) {
+        langBtnMobile.addEventListener('click', () => {
+            // 触发主语言按钮的点击
+            document.getElementById('langBtn').click();
+            // 更新移动端按钮文本
+            const langTextMobile = document.getElementById('langTextMobile');
+            if (langTextMobile) {
+                langTextMobile.textContent = currentLang === 'en' ? '中' : 'EN';
+            }
+        });
+    }
+
+    // 移动端主题切换按钮
+    const themeBtnMobile = document.getElementById('themeBtnMobile');
+    if (themeBtnMobile) {
+        themeBtnMobile.addEventListener('click', () => {
+            document.getElementById('themeBtn').click();
+        });
+    }
+
+    // 移动端音乐切换按钮
+    const musicBtnMobile = document.getElementById('musicBtnMobile');
+    if (musicBtnMobile) {
+        musicBtnMobile.addEventListener('click', () => {
+            document.getElementById('musicBtn').click();
+        });
+    }
 }
 
 function initBackToTop() {
@@ -1153,6 +982,12 @@ function updateLangButton() {
     const langBtn = document.getElementById('langBtn');
     const langText = langBtn.querySelector('span');
     langText.textContent = currentLang === 'en' ? 'EN' : '中';
+    // 更新移动端语言按钮
+    const langBtnMobile = document.getElementById('langBtnMobile');
+    const langTextMobile = document.getElementById('langTextMobile');
+    if (langBtnMobile && langTextMobile) {
+        langTextMobile.textContent = currentLang === 'en' ? 'EN' : '中';
+    }
 }
 
 function applyTranslations() {
@@ -1199,6 +1034,51 @@ function applyTranslations() {
     if (restartBtn) restartBtn.innerHTML = '<i class="fas fa-sync-alt"></i> ' + t('restartBtn');
     if (backBtn) backBtn.innerHTML = '<i class="fas fa-home"></i> ' + t('backBtn');
 
+    // 更新底栏翻译
+    const footerSections = document.querySelectorAll('.footer-section');
+    if (footerSections[0]) {
+        const h4 = footerSections[0].querySelector('h4');
+        const desc = footerSections[0].querySelector('p');
+        if (h4) h4.textContent = t('footerTitle');
+        if (desc) desc.textContent = t('footerDesc');
+    }
+    if (footerSections[1]) {
+        const h4 = footerSections[1].querySelector('h4');
+        const links = footerSections[1].querySelectorAll('a');
+        if (h4) h4.textContent = t('footerLinks');
+        if (links[0]) links[0].textContent = t('footerHome');
+        if (links[1]) links[1].textContent = t('footerGame');
+        if (links[2]) links[2].textContent = t('footerQuiz');
+    }
+    if (footerSections[2]) {
+        const h4 = footerSections[2].querySelector('h4');
+        const links = footerSections[2].querySelectorAll('a');
+        if (h4) h4.textContent = t('footerLegal');
+        if (links[0]) links[0].textContent = t('footerPrivacy');
+        if (links[1]) links[1].textContent = t('footerTerms');
+        if (links[2]) links[2].textContent = t('footerCookies');
+    }
+    if (footerSections[3]) {
+        const h4 = footerSections[3].querySelector('h4');
+        const items = footerSections[3].querySelectorAll('li');
+        if (h4) h4.textContent = t('footerAccessibility');
+        if (items[0]) items[0].innerHTML = '<i class="fas fa-eye"></i> ' + t('colourBlind');
+        if (items[1]) items[1].innerHTML = '<i class="fas fa-text-height"></i> ' + t('adjustableFont');
+        if (items[2]) items[2].innerHTML = '<i class="fas fa-moon"></i> ' + t('darkMode');
+    }
+
+    // 更新版权信息
+    const footerBottom = document.querySelector('.footer-bottom');
+    if (footerBottom) {
+        const copyright = footerBottom.querySelector('p:first-child');
+        if (copyright) copyright.textContent = '© 2026 Circle Planet. ' + t('copyright');
+        const featureTags = footerBottom.querySelectorAll('.feature-tag');
+        if (featureTags[0]) featureTags[0].textContent = t('featureColourBlind');
+        if (featureTags[1]) featureTags[1].textContent = t('featureMobile');
+        if (featureTags[2]) featureTags[2].textContent = t('featureBilingual');
+        if (featureTags[3]) featureTags[3].textContent = t('featureDark');
+    }
+
     // 如果正在答题中，更新当前题目的语言显示
     const quizGame = document.getElementById('quizGame');
     if (quizGame && quizGame.style.display !== 'none' && currentQuestions.length > 0) {
@@ -1215,5 +1095,242 @@ function updateStepText() {
         const current = currentQuestionIndex + 1;
         if (currentLang === 'zh') stepText.textContent = t('stepText') + current + t('ofText') + total;
         else stepText.textContent = 'Step ' + current + ' / ' + total;
+    }
+}
+
+// ========================================
+// Particles.js 初始化
+// ========================================
+function initParticles() {
+    // 检查 particles.js 是否已加载
+    if (typeof particlesJS === 'undefined') {
+        console.log('Particles.js not loaded');
+        return;
+    }
+
+    const isDark = document.body.classList.contains('dark') || document.body.getAttribute('data-theme') === 'dark';
+
+    // Light mode particle settings - circular particles, #4361ee color
+    const lightParticleConfig = {
+        particles: {
+            number: {
+                value: 40,
+                density: {
+                    enable: true,
+                    value_area: 1000
+                }
+            },
+            color: {
+                value: '#4361ee'  // --primary color
+            },
+            shape: {
+                type: 'circle',
+                stroke: {
+                    width: 0,
+                    color: '#4361ee'
+                }
+            },
+            opacity: {
+                value: 0.3,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 1,
+                    opacity_min: 0.1,
+                    sync: false
+                }
+            },
+            size: {
+                value: 5,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 2,
+                    size_min: 2,
+                    sync: false
+                }
+            },
+            line_linked: {
+                enable: false  // No connecting lines
+            },
+            move: {
+                enable: true,
+                speed: 1,
+                direction: 'none',
+                random: true,
+                straight: false,
+                out_mode: 'out'
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: {
+                    enable: true,
+                    mode: 'grab'
+                },
+                onclick: {
+                    enable: true,
+                    mode: 'push'
+                },
+                resize: true
+            },
+            modes: {
+                grab: {
+                    distance: 150,
+                    line_linked: {
+                        opacity: 0.3
+                    }
+                },
+                push: {
+                    particles_nb: 4
+                }
+            }
+        },
+        retina_detect: true
+    };
+
+    // Dark mode particle settings - lighter blue for visibility
+    const darkParticleConfig = {
+        particles: {
+            number: {
+                value: 35,
+                density: {
+                    enable: true,
+                    value_area: 1000
+                }
+            },
+            color: {
+                value: '#93c5fd'  // Lighter blue for dark mode
+            },
+            shape: {
+                type: 'circle',
+                stroke: {
+                    width: 0,
+                    color: '#93c5fd'
+                }
+            },
+            opacity: {
+                value: 0.4,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 0.8,
+                    opacity_min: 0.1,
+                    sync: false
+                }
+            },
+            size: {
+                value: 5,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 1.5,
+                    size_min: 1,
+                    sync: false
+                }
+            },
+            line_linked: {
+                enable: false  // No connecting lines
+            },
+            move: {
+                enable: true,
+                speed: 0.8,
+                direction: 'none',
+                random: true,
+                straight: false,
+                out_mode: 'out'
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: {
+                    enable: true,
+                    mode: 'grab'
+                },
+                onclick: {
+                    enable: true,
+                    mode: 'push'
+                },
+                resize: true
+            },
+            modes: {
+                grab: {
+                    distance: 150,
+                    line_linked: {
+                        opacity: 0.2
+                    }
+                },
+                push: {
+                    particles_nb: 3
+                }
+            }
+        },
+        retina_detect: true
+    };
+
+    // 初始化 particles
+    particlesJS('particles-js', isDark ? darkParticleConfig : lightParticleConfig);
+}
+
+// 更新 particles 颜色
+function updateParticlesColor() {
+    const isDark = document.body.classList.contains('dark') || document.body.getAttribute('data-theme') === 'dark';
+
+    // 更新 particles 颜色
+    if (typeof pJSDom !== 'undefined' && pJSDom[0] && pJSDom[0].pJS) {
+        const pJS = pJSDom[0].pJS;
+
+        if (isDark) {
+            pJS.particles.color.value = '#93c5fd';
+            pJS.particles.line_linked.color = '#93c5fd';
+        } else {
+            pJS.particles.color.value = '#4361ee';
+            pJS.particles.line_linked.color = '#4361ee';
+        }
+
+        // 重新绘制
+        pJS.particles.update();
+        pJS.fn.draw();
+    }
+}
+let starTimer = null;
+
+function createShootingStar() {
+    const container = document.querySelector('.stars-container');
+    // 只检查容器是否存在，定时器已保证在暗色模式下运行
+    if (!container) return;
+
+    const star = document.createElement('div');
+    star.className = 'shooting-star';
+
+    // 1. 随机水平位置 (0% - 100%)
+    star.style.left = Math.random() * 100 + '%';
+
+    // 2. 随机速度 (1.5s - 3s)
+    const duration = 1.5 + Math.random() * 1.5;
+    star.style.animation = `flyUp ${duration}s linear forwards`;
+
+    // 3. 随机大小
+    star.style.width = 1 + Math.random() * 2 + 'px';
+
+    container.appendChild(star);
+
+    // 动画播完后自动删除，防止占用内存
+    star.addEventListener('animationend', () => star.remove());
+}
+
+// 供切换按钮调用的开关函数
+function toggleShootingStars(isDark) {
+    if (isDark) {
+        if (!starTimer) {
+            starTimer = setInterval(createShootingStar, 800); // 每0.8秒出一颗
+        }
+    } else {
+        clearInterval(starTimer);
+        starTimer = null;
+        const container = document.querySelector('.stars-container');
+        if (container) container.innerHTML = ''; // 白天时清空流星
     }
 }

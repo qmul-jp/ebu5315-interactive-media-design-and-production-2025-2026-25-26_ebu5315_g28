@@ -35,6 +35,56 @@ body.dark {
     --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
+.stars-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* 穿透，不挡点击 */
+    z-index: -1; /* 放在粒子层之上，背景之上 */
+    overflow: hidden;
+}
+
+body.dark .stars-container {
+    display: block;
+}
+
+/* 单个流星的样式 */
+.shooting-star {
+    position: absolute;
+    /* 初始位置在屏幕底部下方 */
+    bottom: -100px; 
+    width: 2px;
+    height: 150px; /* 流星的长度 */
+    /* 渐变色尾巴 */
+    background: linear-gradient(to top, rgba(255, 255, 255, 0), rgba(147, 197, 253, 1)); 
+    /* 头部发光 */
+    filter: drop-shadow(0 0 5px rgba(147, 197, 253, 1));
+    /* 默认不透明度 */
+    opacity: 0;
+}
+
+/* 定义流星飞行的动画：从下往上 */
+@keyframes flyUp {
+    0% {
+        transform: translateY(0) scaleY(0); /* 刚开始很短 */
+        opacity: 0;
+    }
+    10% {
+        opacity: 1; /* 快速出现 */
+        transform: translateY(0) scaleY(1); /* 伸展到最长 */
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-120vh) scaleY(1); /* 飞出屏幕顶部 */
+        opacity: 0; /* 消失 */
+    }}
+    
+
 /* Base Reset */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -56,10 +106,180 @@ body {
     min-height: 100vh;
 }
 
-/* 深色模式背景 */
-body.dark {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-    color: var(--dark);
+/* Background Animation for Quiz Page - More visible floating particles */
+body {
+    position: relative;
+}
+
+/* Animated floating particles layer - 浅色模式 - 更亮的粒子效果 */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(180px 180px at 20% 80%, rgba(67, 97, 238, 0.5) 0%, transparent 70%),
+        radial-gradient(200px 200px at 80% 20%, rgba(114, 9, 183, 0.45) 0%, transparent 70%),
+        radial-gradient(150px 150px at 50% 40%, rgba(255, 159, 28, 0.4) 0%, transparent 70%),
+        radial-gradient(170px 170px at 70% 70%, rgba(67, 97, 238, 0.4) 0%, transparent 70%),
+        radial-gradient(120px 120px at 10% 30%, rgba(147, 197, 253, 0.35) 0%, transparent 70%),
+        radial-gradient(140px 140px at 90% 60%, rgba(252, 165, 165, 0.3) 0%, transparent 70%);
+    z-index: -1;
+    animation: bgFloat 10s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Second layer with different animation - 更亮的叠加效果 */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(150px 150px at 30% 50%, rgba(114, 9, 183, 0.4) 0%, transparent 70%),
+        radial-gradient(130px 130px at 70% 85%, rgba(255, 159, 28, 0.4) 0%, transparent 70%),
+        radial-gradient(120px 120px at 90% 45%, rgba(67, 97, 238, 0.35) 0%, transparent 70%),
+        radial-gradient(100px 100px at 15% 65%, rgba(167, 139, 250, 0.35) 0%, transparent 70%),
+        radial-gradient(110px 110px at 55% 15%, rgba(253, 224, 71, 0.3) 0%, transparent 70%);
+    z-index: -1;
+    animation: bgFloat2 12s ease-in-out infinite reverse;
+    pointer-events: none;
+}
+
+@keyframes bgFloat {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    25% {
+        transform: translate(50px, -60px) scale(1.15);
+        opacity: 0.9;
+    }
+    50% {
+        transform: translate(-30px, 50px) scale(0.85);
+        opacity: 1;
+    }
+    75% {
+        transform: translate(60px, 30px) scale(1.1);
+        opacity: 0.85;
+    }
+}
+
+@keyframes bgFloat2 {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 0.9;
+    }
+    33% {
+        transform: translate(-60px, 50px) rotate(15deg) scale(1.1);
+        opacity: 1;
+    }
+    66% {
+        transform: translate(50px, -40px) rotate(-8deg) scale(0.9);
+        opacity: 0.85;
+    }
+}
+
+/* Dark mode - remove animation, use simple black background */
+body.dark,
+[data-theme="dark"] {
+    background: #0f172a;
+}
+
+body.dark::before,
+[data-theme="dark"]::before,
+body.dark::after,
+[data-theme="dark"]::after {
+    display: none;
+}
+
+/* Animated floating shapes - more visible */
+.quiz-selection::before,
+.quiz-selection::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1;
+    animation: floatShape 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.quiz-selection::before {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.2), rgba(114, 9, 183, 0.2));
+    top: 5%;
+    left: -80px;
+    animation-delay: 0s;
+    filter: blur(40px);
+}
+
+.quiz-selection::after {
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(135deg, rgba(255, 159, 28, 0.2), rgba(67, 97, 238, 0.2));
+    bottom: 10%;
+    right: -60px;
+    animation-delay: 3s;
+    filter: blur(40px);
+}
+
+@keyframes floatShape {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translateY(-30px) rotate(180deg) scale(1.1);
+        opacity: 1;
+    }
+}
+
+/* Quiz selection container positioning */
+#quizSelection {
+    position: relative;
+    overflow: visible;
+}
+
+/* Music/Sound control button */
+.music-toggle {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    transition: var(--transition);
+}
+
+.music-toggle:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.music-toggle.muted {
+    background: rgba(100, 116, 139, 0.3);
+    border-color: rgba(100, 116, 139, 0.5);
+    color: var(--gray);
+}
+
+.music-toggle.muted:hover {
+    background: var(--gray);
+    border-color: var(--gray);
+}
+
+.music-toggle i {
+    animation: musicPulse 1s ease-in-out infinite;
+}
+
+.music-toggle.muted i {
+    animation: none;
+}
+
+@keyframes musicPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
 }
 
 a {
@@ -243,19 +463,6 @@ button {
     border: 1px solid var(--glass-border);
 }
 
-/* 音效切换 */
-.sound-toggle {
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    transition: var(--transition);
-}
-
-.sound-toggle:hover {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
-
 /* 移动端菜单 */
 .mobile-menu-btn {
     display: none;
@@ -264,6 +471,7 @@ button {
     font-size: 1.5rem;
     color: var(--dark);
     cursor: pointer;
+    z-index: 1001;
 }
 
 .mobile-menu {
@@ -279,9 +487,12 @@ button {
     visibility: hidden;
     transition: var(--transition);
     z-index: 999;
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-.mobile-menu.show {
+.mobile-menu.active {
     transform: translateY(0);
     opacity: 1;
     visibility: visible;
@@ -300,6 +511,51 @@ button {
 .mobile-nav-link:hover {
     background: var(--glass);
     color: var(--primary);
+}
+
+/* Mobile function buttons */
+.mobile-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.1);
+    margin: 0.75rem 0;
+}
+
+.mobile-functions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+.mobile-btn {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: var(--dark);
+    padding: 0.5rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-btn:hover,
+.mobile-btn:active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.mobile-btn.theme-toggle,
+.mobile-btn.music-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-btn.music-toggle.muted {
+    background: rgba(100, 116, 139, 0.3);
+    color: var(--gray);
 }
 
 /* Quiz Card - 主界面居中 */
@@ -371,11 +627,44 @@ button {
     font-weight: 500;
 }
 
+/* Footer - Always black background with white text */
 .footer {
-    background: var(--dark);
-    color: white;
+    background: #0f172a !important;
+    color: white !important;
     padding: 3rem 2rem 1.5rem;
     margin-top: 4rem;
+}
+
+/* Footer dark mode overrides - always keep black background */
+body.dark .footer,
+[data-theme="dark"] .footer {
+    background: #0f172a !important;
+}
+
+body.dark .footer-content,
+body.dark .footer-bottom,
+[data-theme="dark"] .footer-content,
+[data-theme="dark"] .footer-bottom {
+    background: transparent !important;
+}
+
+body.dark .footer-section h4,
+body.dark .footer-section p,
+body.dark .footer-section ul li,
+body.dark .footer-section ul a,
+body.dark .footer-bottom p,
+[data-theme="dark"] .footer-section h4,
+[data-theme="dark"] .footer-section p,
+[data-theme="dark"] .footer-section ul li,
+[data-theme="dark"] .footer-section ul a,
+[data-theme="dark"] .footer-bottom p {
+    color: white !important;
+    background: transparent !important;
+}
+
+body.dark .feature-tag,
+[data-theme="dark"] .feature-tag {
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .footer-content {
@@ -1221,9 +1510,31 @@ button {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .navbar { padding: 1rem; }
-    .main-nav, .function-buttons { display: none; }
-    .mobile-menu-btn { display: block; }
+    .navbar {
+        padding: 0.75rem 1rem;
+        position: relative;
+    }
+    .main-nav, .function-buttons { display: none !important; }
+    .mobile-menu-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 1001;
+        padding: 0.5rem;
+        margin-right: -0.5rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-menu-btn:active {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+    }
+    .mobile-menu {
+        z-index: 1000;
+    }
     .quiz-title { font-size: 2.2rem; }
     #challenge-title { font-size: 1.5rem; }
     .quiz-card { padding: 2rem 1.5rem; min-height: auto; }
@@ -1251,3 +1562,77 @@ button {
     .option-btn { padding: 1rem; font-size: 0.95rem; }
     .option-letter { width: 30px; height: 30px; font-size: 0.9rem; }
 }
+
+/* ========================================
+   黑暗模式按钮颜色 - 在深色模式下让图标变白
+   ======================================== */
+body.dark .theme-toggle,
+body.dark .theme-toggle i,
+[data-theme="dark"] .theme-toggle,
+[data-theme="dark"] .theme-toggle i,
+body.dark .music-toggle,
+body.dark .music-toggle i,
+[data-theme="dark"] .music-toggle,
+[data-theme="dark"] .music-toggle i {
+    color: white !important;
+}
+
+body.dark .theme-toggle,
+[data-theme="dark"] .theme-toggle {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+body.dark .music-toggle,
+[data-theme="dark"] .music-toggle {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+body.dark .music-toggle.muted,
+[data-theme="dark"] .music-toggle.muted {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+body.dark .theme-toggle:hover,
+[data-theme="dark"] .theme-toggle:hover,
+body.dark .music-toggle:hover,
+[data-theme="dark"] .music-toggle:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* 移动端黑暗模式按钮 */
+body.dark .mobile-btn.theme-toggle,
+body.dark .mobile-btn.music-toggle,
+[data-theme="dark"] .mobile-btn.theme-toggle,
+[data-theme="dark"] .mobile-btn.music-toggle {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+/* ========================================
+   Particles.js 背景容器
+   ======================================== */
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Light mode particles */
+#particles-js canvas {
+    background: transparent !important;
+}
+
+/* Dark mode particles */
+body.dark #particles-js canvas,
+[data-theme="dark"] #particles-js canvas {
+    background: transparent !important;
+}
+

@@ -34,8 +34,8 @@
             <button class="btn btn-sm theme-toggle" id="themeBtn" aria-label="Toggle Dark Mode">
                 <i class="fas fa-moon"></i>
             </button>
-            <button class="btn btn-sm sound-toggle" id="soundBtn" aria-label="Toggle Sound" title="Toggle Sound Effects">
-                <i class="fas fa-volume-up"></i>
+            <button class="btn btn-sm music-toggle" id="musicBtn" aria-label="Toggle Sound & Music" title="Toggle Sound & Music">
+                <i class="fas fa-music"></i>
             </button>
             <button class="btn btn-primary btn-sm" onclick="window.location.href='index.html'">
                 <i class="fas fa-home"></i>
@@ -50,6 +50,21 @@
         <a href="index.html" class="mobile-nav-link"><i class="fas fa-chevron-right"></i> Home</a>
         <a href="game.html" class="mobile-nav-link"><i class="fas fa-chevron-right"></i> Game</a>
         <a href="quiz.html" class="mobile-nav-link active"><i class="fas fa-chevron-right"></i> Quiz</a>
+        <div class="mobile-divider"></div>
+        <div class="mobile-functions">
+            <button class="btn btn-sm mobile-btn" id="langBtnMobile" aria-label="Language Switch">
+                <i class="fas fa-language"></i> <span id="langTextMobile">EN</span>
+            </button>
+            <button class="btn btn-sm mobile-btn theme-toggle" id="themeBtnMobile" aria-label="Toggle Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="btn btn-sm mobile-btn music-toggle" id="musicBtnMobile" aria-label="Toggle Sound & Music">
+                <i class="fas fa-music"></i>
+            </button>
+            <button class="btn btn-sm mobile-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-home"></i>
+            </button>
+        </div>
     </div>
 
     <!-- 面包屑 -->
@@ -228,6 +243,12 @@
     <!-- 庆祝动画容器 -->
     <div class="celebration-container" id="celebrationContainer"></div>
 
+    <!-- Particles.js 背景容器 -->
+    <div id="particles-js"></div>
+
+    <!-- 繁星向上飞效果容器 -->
+    <div class="stars-container"></div>
+
     <!-- 页脚 -->
     <footer class="footer">
         <div class="footer-content">
@@ -275,6 +296,8 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script src="question.js"></script>
     <script src="quiz.js"></script>
 
 <style>
@@ -314,22 +337,7 @@ body {
   cursor: pointer;
 }
 
-.minimax-link {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-weight: 300;
-  color: #adadad;
-  text-decoration: none;
-}
 
-.minimax-link:visited {
-  color: #adadad;
-}
-
-.minimax-link:hover {
-  color: #666666;
-}
 
 .tooltip-content {
   position: absolute;
@@ -399,14 +407,6 @@ body {
     background-color: transparent;
   }
 
-  .minimax-link,
-  .minimax-link:visited {
-    color: #666666;
-  }
-
-  .minimax-link:hover {
-    color: #adadad;
-  }
 
   .tooltip-content {
     background-color: #262626;
@@ -424,44 +424,6 @@ body {
 }
 
 </style>
-<div class="inland-security-footer">
-  <div class="tooltip-container">
-    <div class="trigger-content">
-      <a href="https://www.minimaxi.com/" target="_blank" rel="noreferrer" class="minimax-link">
-        <span>© 2026 MiniMax</span>
-      </a>
-    </div>
-    <div class="tooltip-content">
-      <section class="info-section">
-        <span>上海稀宇科技有限公司</span>
-      </section>
-
-      <section class="info-section">
-        <a class="beian-link" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010402010179" target="_blank" rel="noreferrer">
-          <img alt="hailuo-beian-icon" src="https://cdn.hailuoai.com/hailuo-video-web/public_assets/223037d3-79fd-4db0-a456-749f38a6a14b.png" class="beian-icon">
-          <span class="underline-text">沪公网安备31010402010179号</span>
-        </a>
-        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer" class="underline-text">
-          沪ICP备2023003282号-38
-        </a>
-      </section>
-
-      <section class="info-section">
-        <span>模型名称：MiniMax</span>
-        <span>备案号：Shanghai-MiniMax-202505230046</span>
-      </section>
-
-      <section class="info-section">
-        <a href="https://agent.minimaxi.com/doc/zh/terms-of-service.html" target="_blank" rel="noreferrer" class="underline-text">
-          用户协议
-        </a>
-        <a href="https://agent.minimaxi.com/doc/zh/privacy-policy.html" target="_blank" rel="noreferrer" class="underline-text">
-          隐私政策
-        </a>
-      </section>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
