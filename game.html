@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circle Planet | Interactive Theorems</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="game.css">
+    <style>
+        /* 针对SVG图标的优化样式 */
+        .card-icon svg {
+            width: 80px;
+            height: 80px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform 0.3s ease;
+        }
+        .theorem-card:hover .card-icon svg {
+            transform: scale(1.1);
+        }
+        .geo-dot { fill: currentColor; stroke: none; }
+        .geo-angle { stroke-width: 1.5; opacity: 0.7; }
+    </style>
+</head>
+
+<body>
+    <div class="loader" id="loader">
+        <div class="loader-circle"></div>
+        <p class="loader-text">Loading Theorems...</p>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='index.html'">
+            <div class="logo-circle">
+                <i class="fas fa-circle"></i>
+            </div>
+            <span class="logo-text">Circle Planet</span>
+        </div>
+
+        <div class="main-nav">
+            <a href="index.html" class="nav-link" data-i18n="nav.home">Home</a>
+            <a href="game.html" class="nav-link active" data-i18n="nav.game">Game</a>
+            <a href="quiz.html" class="nav-link" data-i18n="nav.quiz">Quiz</a>
+        </div>
+
+        <div class="function-buttons">
+            <!-- Language Switch Button -->
+            <button class="btn btn-outline btn-sm" id="langBtn" aria-label="Language Switch">
+                <i class="fas fa-language"></i> <span id="langLabel">EN</span>
+            </button>
+            <!-- Font Size Control -->
+            <div class="font-controls" role="group" aria-label="Font Size Control">
+                <button class="font-btn" id="fontS" aria-label="Small Font">A-</button>
+                <button class="font-btn active" id="fontM" aria-label="Medium Font">A</button>
+                <button class="font-btn" id="fontL" aria-label="Large Font">A+</button>
+            </div>
+            <!-- Dark Mode Toggle -->
+            <button class="btn btn-sm theme-toggle" id="themeBtn" aria-label="Toggle Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="window.location.href='index.html'">
+                <i class="fas fa-home"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Hamburger Menu -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- Mobile Side Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html" class="mobile-nav-link" data-i18n="nav.home">Home</a>
+        <a href="game.html" class="mobile-nav-link" data-i18n="nav.game">Game</a>
+        <a href="quiz.html" class="mobile-nav-link" data-i18n="nav.quiz">Quiz</a>
+    </div>
+
+    <!-- Breadcrumb Navigation -->
+    <div class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html"><i class="fas fa-home"></i> <span data-i18n="breadcrumb.home">Home</span></a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current" data-i18n="breadcrumb.current">Interactive Theorems</span>
+    </div>
+
+    <!-- Scroll Progress Indicator - 与主页保持一致 -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <div class="container">
+        <div class="game-hero">
+            <div class="hero-badge">
+                <i class="fas fa-hand-pointer"></i> Drag & Explore
+            </div>
+            <h1 class="hero-title">
+                Explore 8 Core<br>
+                <span class="gradient-text">Circle Theorems</span>
+            </h1>
+            <p class="hero-subtitle">
+                Click any theorem card below to enter the interactive playground. 
+                Drag points on the circle to observe real-time angle relationships!
+            </p>
+        </div>
+
+        <div class="theorems-grid">
+            
+            <div class="theorem-card" data-href="theorems/theorem1.html">
+                <div class="card-icon">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" />
+                        <path d="M20 75 L50 50 L80 75" /> <path d="M20 75 L50 15 L80 75" stroke-dasharray="2 2" /> <circle cx="50" cy="50" r="2" class="geo-dot" />
+                    </svg>
+                </div>
+                <h3>Circle Theorem 1</h3>
+                <p class="theorem-subtitle">Angle at the Centre</p>
+                <p class="theorem-desc">The angle subtended at the centre is twice the angle at the circumference.</p>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="theorem-card" data-href="theorems/theorem2.html">
+                <div class="card-icon">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" />
+                        <line x1="10" y1="50" x2="90" y2="50" /> <path d="M10 50 L50 10 L90 50" /> <rect x="47" y="15" width="6" height="6" transform="rotate(45 50 10)" stroke-width="1"/>
+                    </svg>
+                </div>
+                <h3>Circle Theorem 2</h3>
+                <p class="theorem-subtitle">Angles in a Semicircle</p>
+                <p class="theorem-desc">The angle subtended by a diameter at the circumference is always 90°.</p>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="theorem-card" data-href="theorems/theorem3.html">
+                <div class="card-icon">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" />
+                        <path d="M20 80 L40 12 L80 80" /> <path d="M20 80 L65 15 L80 80" stroke-opacity="0.5" /> <line x1="20" y1="80" x2="80" y2="80" stroke-dasharray="3 3"/> </svg>
+                </div>
+                <h3>Circle Theorem 3</h3>
+                <p class="theorem-subtitle">Angles in the Same Segment</p>
+                <p class="theorem-desc">Angles subtended by the same chord in the same segment are equal.</p>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="theorem-card" data-href="theorems/theorem4.html">
+                <div class="card-icon">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" />
+                        <path d="M30 20 L75 30 L85 70 L20 80 Z" /> </svg>
+                </div>
+                <h3>Circle Theorem 4</h3>
+                <p class="theorem-subtitle">Cyclic Quadrilateral</p>
+                <p class="theorem-desc">Opposite angles of a cyclic quadrilateral sum to 180°.</p>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="theorem-card" data-href="theorems/theorem5.html">
+                <div class="card-icon">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="40" r="30" />
+                        <line x1="50" y1="40" x2="50" y2="70" /> <line x1="10" y1="70" x2="90" y2="70" /> <rect x="50" y="64" width="6" height="6" stroke-width="1"/>
+                        <circle cx="50" cy="40" r="2" class="geo-dot" />
+                    </svg>
+                </div>
+                <h3>Circle Theorem 5</h3>
+                <p class="theorem-subtitle">Radius to a Tangent</p>
+                <p class="theorem-desc">A radius is perpendicular to the tangent at the point of contact.</p>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="theorem-card" data-href="theorems/theorem6.html">
+                <div class="card-icon">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="40" cy="50" r="25" />
+                        <path d="M85 50 L58 32" /> <path d="M85 50 L58 68" /> <circle cx="85" cy="50" r="2" class="geo-dot" />
+                    </svg>
+                </div>
+                <h3>Circle Theorem 6</h3>
+                <p class="theorem-subtitle">Tangents from a Point I</p>
+                <p class="theorem-desc">Tangents drawn from the same external point to a circle are equal in length.</p>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="theorem-card" data-href="theorems/theorem7.html">
+                <div class="card-icon">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="40" cy="50" r="25" />
+                        <line x1="85" y1="50" x2="40" y2="50" stroke-dasharray="3 3" /> <path d="M85 50 L58 32" /> 
+                        <path d="M85 50 L58 68" />
+                        <circle cx="40" cy="50" r="2" class="geo-dot" />
+                    </svg>
+                </div>
+                <h3>Circle Theorem 7</h3>
+                <p class="theorem-subtitle">Tangents from a Point II</p>
+                <p class="theorem-desc">The line from the external point to the centre bisects the angle between the tangents.</p>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="theorem-card" data-href="theorems/theorem8.html">
+                <div class="card-icon">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="40" r="35" />
+                        <line x1="10" y1="75" x2="90" y2="75" /> <path d="M50 75 L20 25 L80 50 Z" /> </svg>
+                </div>
+                <h3>Circle Theorem 8</h3>
+                <p class="theorem-subtitle">Alternate Segment Theorem</p>
+                <p class="theorem-desc">The angle between tangent and chord is equal to the angle in the alternate segment.</p>
+                <button class="btn btn-outline btn-sm card-btn">Enter Playground <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Circle Planet</h4>
+                <p>Interactive Circle Theorem Learning Platform</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="game.html">Game</a></li>
+                    <li><a href="quiz.html">Quiz</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
+                    <li><a href="cookies.html">Cookie Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Accessibility</h4>
+                <ul>
+                    <li><i class="fas fa-eye"></i> Colour-blind Friendly</li>
+                    <li><i class="fas fa-text-height"></i> Adjustable Font</li>
+                    <li><i class="fas fa-moon"></i> Dark Mode</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Circle Planet. All rights reserved.</p>
+            <p class="footer-features">
+                <span class="feature-tag">🎨 Colour-blind Friendly</span>
+                <span class="feature-tag">📱 Mobile Responsive</span>
+                <span class="feature-tag">🌐 Bilingual Support</span>
+                <span class="feature-tag">🌙 Dark Mode</span>
+            </p>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js"></script>
+    <script src="game.js"></script>
