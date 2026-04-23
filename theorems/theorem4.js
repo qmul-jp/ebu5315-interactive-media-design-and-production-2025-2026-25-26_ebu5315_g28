@@ -1,15 +1,475 @@
+/* ========================================
+   Theorem 4: Cyclic Quadrilateral - 专属交互逻辑
+   拖拽点、实时角度计算、图形更新、边栏导航
+   ======================================== */
+
 let isDragging = false;
 let activePoint = null;
-const svgConfig = { cx:300, cy:300, r:200 };
+const svgConfig = { cx: 300, cy: 300, r: 200 };
 
+// 语言切换相关变量
+let currentLang = localStorage.getItem('lang') || 'en';
+
+// 中英文文本映射
+const translations = {
+    en: {
+        // 导航栏
+        logo: 'Circle Planet',
+        navHome: 'Home',
+        navGame: 'Game',
+        navQuiz: 'Quiz',
+        mobileHome: 'Home',
+        mobileGame: 'Game',
+        mobileQuiz: 'Quiz',
+        breadcrumbHome: 'Home',
+        breadcrumbGame: 'Interactive Theorems',
+        // 主内容区
+        breadcrumbCurrent: 'Cyclic Quadrilateral',
+        detailTitle: 'Circle Theorem 4: Cyclic Quadrilateral',
+        backBtn: 'Back to All Theorems',
+        infoTitle: 'How to Explore',
+        infoPoint1: 'Drag points <strong>A</strong>, <strong>B</strong>, <strong>C</strong>, and <strong>D</strong> around the circle.',
+        infoPoint2: 'Observe how the angles change in real-time.',
+        infoPoint3: 'Notice that <span class="formula">∠A + ∠C = 180°</span> and <span class="formula">∠B + ∠D = 180°</span>.',
+        // 数据面板
+        angleA: 'Angle ∠A',
+        angleB: 'Angle ∠B',
+        angleC: 'Angle ∠C',
+        angleD: 'Angle ∠D',
+        sumAC: 'Sum (A + C)',
+        sumBD: 'Sum (B + D)',
+        // 边栏
+        sidebarTitle: 'Theorems',
+        backToAll: 'All Theorems',
+        theorem1: 'Angle at the Centre',
+        theorem2: 'Angles in a Semicircle',
+        theorem3: 'Angles in the Same Segment',
+        theorem4: 'Cyclic Quadrilateral',
+        theorem5: 'Radius to a Tangent',
+        theorem6: 'Tangents from a Point I',
+        theorem7: 'Tangents from a Point II',
+        theorem8: 'Alternate Segment Theorem',
+        // 页脚
+        footerBrand: 'Circle Planet',
+        footerDesc: 'Interactive Circle Theorem Learning Platform',
+        footerQuickLinks: 'Quick Links',
+        footerHome: 'Home',
+        footerGame: 'Game',
+        footerQuiz: 'Quiz',
+        footerLegal: 'Legal',
+        footerPrivacy: 'Privacy Policy',
+        footerTerms: 'Terms of Use',
+        footerCookies: 'Cookie Policy',
+        footerAccessibility: 'Accessibility',
+        footerColourBlind: 'Colour-blind Friendly',
+        footerFont: 'Adjustable Font',
+        footerDarkMode: 'Dark Mode',
+        footerCopyright: '© 2026 Circle Planet. All rights reserved.',
+        featureColourBlind: 'Colour-blind Friendly',
+        featureMobile: 'Mobile Responsive',
+        featureBilingual: 'Bilingual Support',
+        featureDarkMode: 'Dark Mode'
+    },
+    zh: {
+        // 导航栏
+        logo: 'Circle Planet',
+        navHome: '首页',
+        navGame: '游戏',
+        navQuiz: '测验',
+        mobileHome: '首页',
+        mobileGame: '游戏',
+        mobileQuiz: '测验',
+        breadcrumbHome: '首页',
+        breadcrumbGame: '交互定理',
+        // 主内容区
+        breadcrumbCurrent: '圆内接四边形',
+        detailTitle: '圆定理 4：圆内接四边形',
+        backBtn: '返回全部定理',
+        infoTitle: '如何探索',
+        infoPoint1: '拖动圆上的点 <strong>A</strong>、<strong>B</strong>、<strong>C</strong> 和 <strong>D</strong>。',
+        infoPoint2: '观察角度如何实时变化。',
+        infoPoint3: '注意这个固定关系：<span class="formula">∠A + ∠C = 180°</span> 和 <span class="formula">∠B + ∠D = 180°</span>。',
+        // 数据面板
+        angleA: '角度 ∠A',
+        angleB: '角度 ∠B',
+        angleC: '角度 ∠C',
+        angleD: '角度 ∠D',
+        sumAC: '和 (A + C)',
+        sumBD: '和 (B + D)',
+        // 边栏
+        sidebarTitle: '定理列表',
+        backToAll: '全部定理',
+        theorem1: '圆心角',
+        theorem2: '半圆上的角',
+        theorem3: '同弧所对的角',
+        theorem4: '圆内接四边形',
+        theorem5: '切线的性质',
+        theorem6: '切线长定理 I',
+        theorem7: '切线长定理 II',
+        theorem8: '弦切角定理',
+        // 页脚
+        footerBrand: 'Circle Planet',
+        footerDesc: '交互式圆定理学习平台',
+        footerQuickLinks: '快速链接',
+        footerHome: '首页',
+        footerGame: '游戏',
+        footerQuiz: '测验',
+        footerLegal: '法律信息',
+        footerPrivacy: '隐私政策',
+        footerTerms: '使用条款',
+        footerCookies: 'Cookie 政策',
+        footerAccessibility: '无障碍功能',
+        footerColourBlind: '色盲友好',
+        footerFont: '可调节字体',
+        footerDarkMode: '深色模式',
+        footerCopyright: '© 2026 圆星球 版权所有 ',
+        featureColourBlind: '色盲友好',
+        featureMobile: '移动端适配',
+        featureBilingual: '双语支持',
+        featureDarkMode: '深色模式'
+    }
+};
+
+// 获取翻译文本
+function t(key) {
+    return translations[currentLang][key] || translations['en'][key] || key;
+}
+
+// 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
     initTheorem4();
+    initSidebar();
+    initLangBtn();
+    initTheme();
+    initFontSize();
+    initMobileMenu();
+    initBackToTop();
+    applyTranslations();
 });
 
+// ========================================
+// 边栏功能初始化
+// ========================================
+function initSidebar() {
+    const sidebar = document.getElementById('theoremSidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+
+    if (sidebar && toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            const icon = toggleBtn.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.className = 'fas fa-chevron-left';
+            } else {
+                icon.className = 'fas fa-chevron-right';
+            }
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        });
+
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        if (savedState === 'true') {
+            sidebar.classList.add('collapsed');
+            toggleBtn.querySelector('i').className = 'fas fa-chevron-left';
+        }
+    }
+}
+
+// ========================================
+// 语言切换功能
+// ========================================
+function initLangBtn() {
+    const langBtn = document.getElementById('langBtn');
+    currentLang = localStorage.getItem('lang') || 'en';
+    updateLangButton();
+
+    if (langBtn) {
+        langBtn.addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'zh' : 'en';
+            localStorage.setItem('lang', currentLang);
+            updateLangButton();
+            applyTranslations();
+        });
+    }
+}
+
+function updateLangButton() {
+    const langBtn = document.getElementById('langBtn');
+    const langText = langBtn ? langBtn.querySelector('span') : null;
+    if (langText) {
+        langText.textContent = currentLang === 'en' ? '中' : 'EN';
+    }
+}
+
+function applyTranslations() {
+    // 更新导航栏
+    const logo = document.querySelector('.logo-text[data-i18n="logo"]');
+    if (logo) logo.textContent = t('logo');
+
+    const navHome = document.querySelector('.nav-link[data-i18n="navHome"]');
+    if (navHome) navHome.textContent = t('navHome');
+
+    const navGame = document.querySelector('.nav-link[data-i18n="navGame"]');
+    if (navGame) navGame.textContent = t('navGame');
+
+    const navQuiz = document.querySelector('.nav-link[data-i18n="navQuiz"]');
+    if (navQuiz) navQuiz.textContent = t('navQuiz');
+
+    // 更新移动端菜单
+    const mobileHome = document.querySelector('.mobile-nav-link[data-i18n="mobileHome"]');
+    if (mobileHome) mobileHome.textContent = t('mobileHome');
+
+    const mobileGame = document.querySelector('.mobile-nav-link[data-i18n="mobileGame"]');
+    if (mobileGame) mobileGame.textContent = t('mobileGame');
+
+    const mobileQuiz = document.querySelector('.mobile-nav-link[data-i18n="mobileQuiz"]');
+    if (mobileQuiz) mobileQuiz.textContent = t('mobileQuiz');
+
+    // 更新面包屑导航
+    const breadcrumbHome = document.querySelector('[data-i18n="breadcrumbHome"]');
+    if (breadcrumbHome) breadcrumbHome.textContent = t('breadcrumbHome');
+
+    const breadcrumbGame = document.querySelector('[data-i18n="breadcrumbGame"]');
+    if (breadcrumbGame) breadcrumbGame.textContent = t('breadcrumbGame');
+
+    const breadcrumbCurrent = document.querySelector('.breadcrumb-current[data-i18n="breadcrumbCurrent"]');
+    if (breadcrumbCurrent) breadcrumbCurrent.textContent = t('breadcrumbCurrent');
+
+    // 更新详情页标题
+    const detailTitle = document.querySelector('.detail-title[data-i18n="detailTitle"]');
+    if (detailTitle) detailTitle.textContent = t('detailTitle');
+
+    // 更新返回按钮
+    const backBtn = document.querySelector('.detail-header .btn[data-i18n="backBtn"]');
+    if (backBtn) backBtn.innerHTML = '<i class="fas fa-arrow-left"></i> ' + t('backBtn');
+
+    // 更新说明区标题
+    const infoTitle = document.querySelector('.info-card h3[data-i18n="infoTitle"]');
+    if (infoTitle) infoTitle.innerHTML = '<i class="fas fa-lightbulb"></i> ' + t('infoTitle');
+
+    // 更新说明区列表项
+    const infoPoints = document.querySelectorAll('.info-point');
+    const pointKeys = ['infoPoint1', 'infoPoint2', 'infoPoint3'];
+    infoPoints.forEach((point, index) => {
+        if (pointKeys[index]) point.innerHTML = t(pointKeys[index]);
+    });
+
+    // 更新数据面板标签
+    const angleALabel = document.querySelector('.data-a .data-label[data-i18n="angleALabel"]');
+    const angleBLabel = document.querySelector('.data-b .data-label[data-i18n="angleBLabel"]');
+    const angleCLabel = document.querySelector('.data-c .data-label[data-i18n="angleCLabel"]');
+    const angleDLabel = document.querySelector('.data-d .data-label[data-i18n="angleDLabel"]');
+    const sumACLabel = document.querySelector('.data-sum .data-label[data-i18n="sumACLabel"]');
+    const sumBDLabel = document.querySelectorAll('.data-label[data-i18n="sumBDLabel"]');
+
+    if (angleALabel) angleALabel.textContent = t('angleALabel');
+    if (angleBLabel) angleBLabel.textContent = t('angleBLabel');
+    if (angleCLabel) angleCLabel.textContent = t('angleCLabel');
+    if (angleDLabel) angleDLabel.textContent = t('angleDLabel');
+    if (sumACLabel) sumACLabel.textContent = t('sumACLabel');
+    sumBDLabel.forEach(el => el.textContent = t('sumBDLabel'));
+
+    // 更新边栏标题
+    const sidebarTitle = document.querySelector('.sidebar-header h3 span');
+    if (sidebarTitle) sidebarTitle.textContent = t('sidebarTitle');
+
+    // 更新边栏返回按钮
+    const sidebarBackBtn = document.querySelector('.sidebar-back-btn');
+    if (sidebarBackBtn) sidebarBackBtn.innerHTML = '<i class="fas fa-th"></i> ' + t('backToAll');
+
+    // 更新定理导航标题
+    const theoremTitles = document.querySelectorAll('.theorem-nav-title');
+    const titleKeys = ['theorem1', 'theorem2', 'theorem3', 'theorem4', 'theorem5', 'theorem6', 'theorem7', 'theorem8'];
+    theoremTitles.forEach((title, index) => {
+        if (titleKeys[index]) {
+            title.textContent = t(titleKeys[index]);
+        }
+    });
+
+    // 更新页脚
+    const footerBrand = document.querySelector('[data-i18n="footerBrand"]');
+    if (footerBrand) footerBrand.textContent = t('footerBrand');
+
+    const footerDesc = document.querySelector('[data-i18n="footerDesc"]');
+    if (footerDesc) footerDesc.textContent = t('footerDesc');
+
+    const footerQuickLinks = document.querySelector('[data-i18n="footerQuickLinks"]');
+    if (footerQuickLinks) footerQuickLinks.textContent = t('footerQuickLinks');
+
+    const footerHome = document.querySelector('[data-i18n="footerHome"]');
+    if (footerHome) footerHome.textContent = t('footerHome');
+
+    const footerGame = document.querySelector('[data-i18n="footerGame"]');
+    if (footerGame) footerGame.textContent = t('footerGame');
+
+    const footerQuiz = document.querySelector('[data-i18n="footerQuiz"]');
+    if (footerQuiz) footerQuiz.textContent = t('footerQuiz');
+
+    const footerLegal = document.querySelector('[data-i18n="footerLegal"]');
+    if (footerLegal) footerLegal.textContent = t('footerLegal');
+
+    const footerPrivacy = document.querySelector('[data-i18n="footerPrivacy"]');
+    if (footerPrivacy) footerPrivacy.textContent = t('footerPrivacy');
+
+    const footerTerms = document.querySelector('[data-i18n="footerTerms"]');
+    if (footerTerms) footerTerms.textContent = t('footerTerms');
+
+    const footerCookies = document.querySelector('[data-i18n="footerCookies"]');
+    if (footerCookies) footerCookies.textContent = t('footerCookies');
+
+    const footerAccessibility = document.querySelector('[data-i18n="footerAccessibility"]');
+    if (footerAccessibility) footerAccessibility.textContent = t('footerAccessibility');
+
+    const footerColourBlind = document.querySelector('[data-i18n="footerColourBlind"]');
+    if (footerColourBlind) footerColourBlind.textContent = t('footerColourBlind');
+
+    const footerFont = document.querySelector('[data-i18n="footerFont"]');
+    if (footerFont) footerFont.textContent = t('footerFont');
+
+    const footerDarkMode = document.querySelector('[data-i18n="footerDarkMode"]');
+    if (footerDarkMode) footerDarkMode.textContent = t('footerDarkMode');
+
+    const footerCopyright = document.querySelector('[data-i18n="footerCopyright"]');
+    if (footerCopyright) footerCopyright.textContent = t('footerCopyright');
+
+    const featureColourBlind = document.querySelector('[data-i18n="featureColourBlind"]');
+    if (featureColourBlind) featureColourBlind.textContent = t('featureColourBlind');
+
+    const featureMobile = document.querySelector('[data-i18n="featureMobile"]');
+    if (featureMobile) featureMobile.textContent = t('featureMobile');
+
+    const featureBilingual = document.querySelector('[data-i18n="featureBilingual"]');
+    if (featureBilingual) featureBilingual.textContent = t('featureBilingual');
+
+    const featureDarkMode = document.querySelector('[data-i18n="featureDarkMode"]');
+    if (featureDarkMode) featureDarkMode.textContent = t('featureDarkMode');
+}
+
+// ========================================
+// 深色模式功能
+// ========================================
+
+// 全局标记：防止重复初始化主题功能
+window.themeInitialized = window.themeInitialized || false;
+
+function initTheme() {
+    // 防止重复初始化：如果已经初始化过，直接同步图标状态并返回
+    if (window.themeInitialized) {
+        updateThemeIcon();
+        return;
+    }
+
+    // 标记为已初始化
+    window.themeInitialized = true;
+
+    const themeBtn = document.getElementById('themeBtn');
+    const savedTheme = localStorage.getItem('theme') || 'light';
+
+    if (savedTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+    }
+    updateThemeIcon();
+
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            const isDark = document.body.hasAttribute('data-theme');
+            if (isDark) {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+            }
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            updateThemeIcon();
+        });
+    }
+}
+
+// 更新主题图标
+function updateThemeIcon() {
+    const themeBtn = document.getElementById('themeBtn');
+    if (themeBtn) {
+        const isDark = document.body.hasAttribute('data-theme');
+        themeBtn.innerHTML = isDark
+            ? '<i class="fas fa-sun"></i>'
+            : '<i class="fas fa-moon"></i>';
+    }
+}
+
+// ========================================
+// 字体大小功能
+// ========================================
+function initFontSize() {
+    const fontBtns = document.querySelectorAll('.font-btn');
+    const savedSize = localStorage.getItem('fontSize') || '16';
+
+    document.documentElement.style.setProperty('--font-size-base', savedSize + 'px');
+    updateActiveFontBtn(savedSize);
+
+    fontBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const size = btn.id === 'fontS' ? '14' : btn.id === 'fontL' ? '18' : '16';
+            document.documentElement.style.setProperty('--font-size-base', size + 'px');
+            localStorage.setItem('fontSize', size);
+            updateActiveFontBtn(size);
+        });
+    });
+
+    function updateActiveFontBtn(size) {
+        fontBtns.forEach(b => b.classList.remove('active'));
+        const activeBtn = document.getElementById(size === '14' ? 'fontS' : size === '18' ? 'fontL' : 'fontM');
+        if (activeBtn) activeBtn.classList.add('active');
+    }
+}
+
+// ========================================
+// 移动端菜单
+// ========================================
+function initMobileMenu() {
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('show');
+            menuBtn.innerHTML = mobileMenu.classList.contains('show') ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('show');
+                menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+    }
+}
+
+// ========================================
+// 返回顶部按钮
+// ========================================
+function initBackToTop() {
+    const backToTop = document.getElementById('backToTop');
+
+    if (backToTop) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+}
+
+// ========================================
+// 核心交互逻辑
+// ========================================
 function initTheorem4() {
     const svg = document.getElementById('theoremSvg');
-    const points = ['A','B','C','D'];
-    
+    const points = ['A', 'B', 'C', 'D'];
+
     points.forEach(p => {
         const el = document.getElementById(`point${p}`);
         el.addEventListener('mousedown', () => { isDragging = true; activePoint = p; });
@@ -21,7 +481,6 @@ function initTheorem4() {
     document.addEventListener('mouseup', endDrag);
     document.addEventListener('touchend', endDrag);
 
-    // 初始化时强制所有点在圆上
     points.forEach(p => forcePointOnCircle(p));
     updateTheorem4();
 }
@@ -49,7 +508,8 @@ function drag(e) {
     if (!isDragging || !activePoint) return;
     const svg = document.getElementById('theoremSvg');
     const pt = svg.createSVGPoint();
-    pt.x = e.clientX; pt.y = e.clientY;
+    pt.x = e.clientX;
+    pt.y = e.clientY;
     const p = pt.matrixTransform(svg.getScreenCTM().inverse());
     setPointOnCircle(p.x, p.y);
 }
@@ -89,12 +549,12 @@ function setPointOnCircle(x, y) {
 
 function updateTheorem4() {
     const A = getPt('pointA'), B = getPt('pointB'), C = getPt('pointC'), D = getPt('pointD');
-    
+
     const angleA = calculateAngle(A, D, B);
     const angleB = calculateAngle(B, A, C);
     const angleC = calculateAngle(C, B, D);
     const angleD = calculateAngle(D, C, A);
-    
+
     const sumAC = Math.round(angleA + angleC);
     const sumBD = Math.round(angleB + angleD);
 
@@ -118,22 +578,24 @@ function updateTheorem4() {
 
 function getPt(id) {
     const el = document.getElementById(id);
-    return {x:parseFloat(el.getAttribute('cx')), y:parseFloat(el.getAttribute('cy'))};
+    return { x: parseFloat(el.getAttribute('cx')), y: parseFloat(el.getAttribute('cy')) };
 }
 
 function updateLine(id, p1, p2) {
     const l = document.getElementById(id);
-    l.setAttribute('x1', p1.x); l.setAttribute('y1', p1.y);
-    l.setAttribute('x2', p2.x); l.setAttribute('y2', p2.y);
+    l.setAttribute('x1', p1.x);
+    l.setAttribute('y1', p1.y);
+    l.setAttribute('x2', p2.x);
+    l.setAttribute('y2', p2.y);
 }
 
 function calculateAngle(vertex, p1, p2) {
-    const v1 = {x:p1.x-vertex.x, y:p1.y-vertex.y};
-    const v2 = {x:p2.x-vertex.x, y:p2.y-vertex.y};
-    const dot = v1.x*v2.x + v1.y*v2.y;
-    const det = v1.x*v2.y - v1.y*v2.x;
+    const v1 = { x: p1.x - vertex.x, y: p1.y - vertex.y };
+    const v2 = { x: p2.x - vertex.x, y: p2.y - vertex.y };
+    const dot = v1.x * v2.x + v1.y * v2.y;
+    const det = v1.x * v2.y - v1.y * v2.x;
     let a = Math.atan2(det, dot);
-    if (a < 0) a += 2*Math.PI;
+    if (a < 0) a += 2 * Math.PI;
     const deg = a * 180 / Math.PI;
     return deg > 180 ? 360 - deg : deg;
 }
@@ -144,10 +606,10 @@ function drawAcuteAngleArc(id, centre, p1, p2, radius) {
     let startAngle = Math.atan2(p1.y - centre.y, p1.x - centre.x);
     let endAngle = Math.atan2(p2.y - centre.y, p2.x - centre.x);
     let angleDiff = endAngle - startAngle;
-    if (angleDiff < 0) angleDiff += 2*Math.PI;
+    if (angleDiff < 0) angleDiff += 2 * Math.PI;
     if (angleDiff > Math.PI) {
         [startAngle, endAngle] = [endAngle, startAngle];
-        angleDiff = 2*Math.PI - angleDiff;
+        angleDiff = 2 * Math.PI - angleDiff;
     }
     const x1 = centre.x + radius * Math.cos(startAngle);
     const y1 = centre.y + radius * Math.sin(startAngle);

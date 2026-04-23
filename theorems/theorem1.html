@@ -25,13 +25,13 @@
             <div class="logo-circle">
                 <i class="fas fa-circle"></i>
             </div>
-            <span class="logo-text">Circle Planet</span>
+            <span class="logo-text" data-i18n="logo">Circle Planet</span>
         </div>
 
         <div class="main-nav">
-            <a href="../index.html" class="nav-link">Home</a>
-            <a href="../game.html" class="nav-link active">Game</a>
-            <a href="../quiz.html" class="nav-link">Quiz</a>
+            <a href="../index.html" class="nav-link" data-i18n="navHome">Home</a>
+            <a href="../game.html" class="nav-link active" data-i18n="navGame">Game</a>
+            <a href="../quiz.html" class="nav-link" data-i18n="navQuiz">Quiz</a>
         </div>
 
         <div class="function-buttons">
@@ -57,16 +57,16 @@
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
-        <a href="../index.html" class="mobile-nav-link">Home</a>
-        <a href="../game.html" class="mobile-nav-link">Game</a>
-        <a href="../quiz.html" class="mobile-nav-link">Quiz</a>
+        <a href="../index.html" class="mobile-nav-link" data-i18n="mobileHome">Home</a>
+        <a href="../game.html" class="mobile-nav-link" data-i18n="mobileGame">Game</a>
+        <a href="../quiz.html" class="mobile-nav-link" data-i18n="mobileQuiz">Quiz</a>
     </div>
 
     <!-- 面包屑导航 -->
     <div class="breadcrumb">
-        <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="../index.html"><i class="fas fa-home"></i> <span data-i18n="breadcrumbHome">Home</span></a>
         <span class="breadcrumb-separator">/</span>
-        <a href="../game.html">Interactive Theorems</a>
+        <a href="../game.html" data-i18n="breadcrumbGame">Interactive Theorems</a>
         <span class="breadcrumb-separator">/</span>
         <span class="breadcrumb-current">Angle at the Centre</span>
     </div>
@@ -228,41 +228,41 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>Circle Planet</h4>
-                <p>Interactive Circle Theorem Learning Platform</p>
+                <h4 data-i18n="footerBrand">Circle Planet</h4>
+                <p data-i18n="footerDesc">Interactive Circle Theorem Learning Platform</p>
             </div>
             <div class="footer-section">
-                <h4>Quick Links</h4>
+                <h4 data-i18n="footerQuickLinks">Quick Links</h4>
                 <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../game.html">Game</a></li>
-                    <li><a href="../quiz.html">Quiz</a></li>
+                    <li><a href="../index.html" data-i18n="footerHome">Home</a></li>
+                    <li><a href="../game.html" data-i18n="footerGame">Game</a></li>
+                    <li><a href="../quiz.html" data-i18n="footerQuiz">Quiz</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Legal</h4>
+                <h4 data-i18n="footerLegal">Legal</h4>
                 <ul>
-                    <li><a href="../privacy.html">Privacy Policy</a></li>
-                    <li><a href="../terms.html">Terms of Use</a></li>
-                    <li><a href="../cookies.html">Cookie Policy</a></li>
+                    <li><a href="../privacy.html" data-i18n="footerPrivacy">Privacy Policy</a></li>
+                    <li><a href="../terms.html" data-i18n="footerTerms">Terms of Use</a></li>
+                    <li><a href="../cookies.html" data-i18n="footerCookies">Cookie Policy</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Accessibility</h4>
+                <h4 data-i18n="footerAccessibility">Accessibility</h4>
                 <ul>
-                    <li><i class="fas fa-eye"></i> Colour-blind Friendly</li>
-                    <li><i class="fas fa-text-height"></i> Adjustable Font</li>
-                    <li><i class="fas fa-moon"></i> Dark Mode</li>
+                    <li><i class="fas fa-eye"></i> <span data-i18n="footerColourBlind">Colour-blind Friendly</span></li>
+                    <li><i class="fas fa-text-height"></i> <span data-i18n="footerFont">Adjustable Font</span></li>
+                    <li><i class="fas fa-moon"></i> <span data-i18n="footerDarkMode">Dark Mode</span></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>© 2026 Circle Planet. All rights reserved.</p>
+            <p data-i18n="footerCopyright">© 2026 Circle Planet. All rights reserved.</p>
             <p class="footer-features">
-                <span class="feature-tag">Colour-blind Friendly</span>
-                <span class="feature-tag">Mobile Responsive</span>
-                <span class="feature-tag">Bilingual Support</span>
-                <span class="feature-tag">Dark Mode</span>
+                <span class="feature-tag" data-i18n="featureColourBlind">Colour-blind Friendly</span>
+                <span class="feature-tag" data-i18n="featureMobile">Mobile Responsive</span>
+                <span class="feature-tag" data-i18n="featureBilingual">Bilingual Support</span>
+                <span class="feature-tag" data-i18n="featureDarkMode">Dark Mode</span>
             </p>
         </div>
     </footer>
@@ -275,4 +275,3 @@
     <script src="../script.js"></script>
     <!-- 定理1专属交互逻辑 -->
     <script src="theorem1.js"></script>
-</body>

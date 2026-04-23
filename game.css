@@ -1,3 +1,456 @@
+/* ========================================
+   Circle Planet - Game Page Styles
+   与 Homepage 保持一致的字体设置
+   ======================================== */
+
+/* 主题变量 - 与 Homepage 一致 */
+:root {
+    --primary: #4361ee;
+    --primary-light: #5a77ff;
+    --secondary: #7209b7;
+    --accent: #ff9f1c;
+    --accent-light: #ffb347;
+    --light: #f8f9ff;
+    --dark: #0f172a;
+    --gray: #64748b;
+    --glass: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --font-size-base: 16px;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 15px 40px rgba(67, 97, 238, 0.25);
+    --radius: 16px;
+    --radius-lg: 24px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 深色模式变量 */
+[data-theme="dark"] {
+    --primary: #5a77ff;
+    --secondary: #9333ea;
+    --accent: #ffb347;
+    --light: #0f172a;
+    --dark: #f1f5f9;
+    --gray: #94a3b8;
+    --glass: rgba(15, 23, 42, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 15px 40px rgba(90, 119, 255, 0.3);
+}
+
+/* 基础重置 - 确保字体一致性 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: var(--font-size-base);
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    line-height: 1.7;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e6eaff 50%, #f5f0ff 100%);
+    background-attachment: fixed;
+    color: var(--dark);
+    position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+body[data-theme="dark"] {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+}
+
+/* 背景装饰 */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+body::before {
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(67,97,238,0.15) 0%, transparent 70%);
+}
+
+body::after {
+    bottom: -15%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(114,9,183,0.12) 0%, transparent 70%);
+}
+
+/* ========================================
+   导航栏样式 - 与 Homepage 完全一致
+   ======================================== */
+
+/* 加载动画 */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--light);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader-circle {
+    width: 60px;
+    height: 60px;
+    border: 4px solid var(--glass-border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loader-text {
+    margin-top: 1rem;
+    color: var(--primary);
+    font-weight: 600;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* 滚动进度条 */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    width: 0%;
+    z-index: 1001;
+    transition: width 0.1s ease;
+}
+
+/* 导航栏 */
+.navbar {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 1rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.logo:hover {
+    transform: scale(1.02);
+}
+
+.logo-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--dark);
+}
+
+/* 主导航 */
+.main-nav {
+    display: flex;
+    gap: 2.5rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--dark);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.6rem 0;
+    position: relative;
+    transition: var(--transition);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+}
+
+/* 功能按钮 */
+.function-buttons {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+/* 按钮基础样式 */
+.btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: var(--transition);
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(67, 97, 238, 0.45);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-light {
+    background: white;
+    color: var(--accent);
+}
+
+.btn-sm {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.85rem;
+}
+
+.btn-lg {
+    padding: 0.8rem 1.6rem;
+    font-size: 1rem;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* 字体控制 */
+.font-controls {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.font-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    background: transparent;
+    color: var(--primary);
+    cursor: pointer;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.font-btn:hover,
+.font-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+}
+
+/* 音乐切换按钮 */
+.music-toggle {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+}
+
+.music-toggle:hover {
+    border-color: var(--accent);
+}
+
+body[data-theme="dark"] .music-toggle {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+}
+
+/* 移动端菜单按钮 */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--dark);
+    cursor: pointer;
+}
+
+/* 移动端菜单 */
+.mobile-menu {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: var(--light);
+    padding: 1rem;
+    box-shadow: var(--shadow);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    z-index: 999;
+}
+
+.mobile-menu.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-nav-link {
+    display: block;
+    padding: 1rem;
+    color: var(--dark);
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.mobile-nav-link:hover {
+    background: var(--glass);
+    color: var(--primary);
+}
+
+/* 深色模式导航栏样式 */
+body[data-theme="dark"] .navbar {
+    background: var(--glass);
+}
+
+body[data-theme="dark"] .logo-text {
+    color: var(--dark);
+}
+
+body[data-theme="dark"] .nav-link {
+    color: var(--dark);
+}
+
+body[data-theme="dark"] .nav-link:hover,
+body[data-theme="dark"] .nav-link.active {
+    color: var(--primary);
+}
+
+body[data-theme="dark"] .logo-circle {
+    box-shadow: 0 4px 15px rgba(90, 119, 255, 0.4);
+}
+
+body[data-theme="dark"] .theme-toggle {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+}
+
+body[data-theme="dark"] .mobile-menu {
+    background: var(--light);
+}
+
+body[data-theme="dark"] .mobile-nav-link {
+    color: var(--dark);
+}
+
+/* 容器 - 与 Homepage 一致 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* 按钮基础样式 */
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
 /* 标题区 */
 .game-hero {
     min-height: 40vh;
@@ -10,8 +463,140 @@
     position: relative;
 }
 
+.game-hero .hero-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+}
+
 .game-hero .hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--gray);
     max-width: 700px;
+    margin-bottom: 2.5rem;
+}
+
+/* 渐变文字 - 与 Homepage 一致 */
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Hero Badge 样式 */
+.game-hero .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+}
+
+/* ========================================
+   深色模式支持 - Game 页面专用样式
+   ======================================== */
+
+/* Game Hero 深色模式 */
+body[data-theme="dark"] .game-hero .hero-title {
+    color: #f1f5f9;
+}
+
+body[data-theme="dark"] .game-hero .hero-subtitle {
+    color: #94a3b8;
+}
+
+body[data-theme="dark"] .hero-badge {
+    background: linear-gradient(135deg, #5a77ff, #9333ea);
+    box-shadow: 0 4px 15px rgba(90, 119, 255, 0.3);
+}
+
+/* 定理卡片深色模式 */
+body[data-theme="dark"] .theorem-card {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body[data-theme="dark"] .theorem-card h3 {
+    color: #5a77ff;
+}
+
+body[data-theme="dark"] .theorem-subtitle {
+    color: #9333ea;
+}
+
+body[data-theme="dark"] .theorem-desc {
+    color: #94a3b8;
+}
+
+body[data-theme="dark"] .theorem-card:hover {
+    border-color: rgba(90, 119, 255, 0.4);
+    background: rgba(30, 41, 59, 0.95);
+}
+
+/* 卡片图标深色模式 */
+body[data-theme="dark"] .card-icon {
+    background: linear-gradient(135deg, #5a77ff, #9333ea);
+    box-shadow: 0 6px 20px rgba(90, 119, 255, 0.35);
+}
+
+/* SVG 图标深色模式 - 确保在深色模式下清晰可见 */
+body[data-theme="dark"] .theorem-card .card-icon svg {
+    stroke: #ffffff;
+}
+
+body[data-theme="dark"] .theorem-card .card-icon svg circle,
+body[data-theme="dark"] .theorem-card .card-icon svg line,
+body[data-theme="dark"] .theorem-card .card-icon svg path {
+    stroke: #ffffff;
+}
+
+/* 按钮深色模式 */
+body[data-theme="dark"] .theorem-card .btn-outline {
+    border-color: #5a77ff;
+    color: #5a77ff;
+}
+
+body[data-theme="dark"] .theorem-card .btn-outline:hover {
+    background: #5a77ff;
+    color: white;
+}
+
+/* 锁定卡片深色模式 */
+body[data-theme="dark"] .theorem-card.locked {
+    background: rgba(15, 23, 42, 0.6);
+    opacity: 0.5;
+}
+
+/* Focus 状态深色模式 */
+body[data-theme="dark"] .theorem-card:focus-visible {
+    outline-color: #ffb347;
+}
+
+/* Breadcrumb 深色模式 */
+body[data-theme="dark"] .breadcrumb {
+    background: rgba(30, 41, 59, 0.7);
+    color: #f1f5f9;
+}
+
+body[data-theme="dark"] .breadcrumb a {
+    color: #5a77ff;
+}
+
+body[data-theme="dark"] .breadcrumb-separator {
+    color: #64748b;
+}
+
+body[data-theme="dark"] .breadcrumb-current {
+    color: #94a3b8;
 }
 
 /* 8个定理卡片网格 */
@@ -83,9 +668,8 @@
 
 .theorem-card h3 {
     color: var(--primary);
-    margin-bottom: 0.5rem;
-    font-size: 1.3rem;
-    font-weight: 800;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
 }
 
 .theorem-subtitle {
@@ -107,7 +691,166 @@
     justify-content: center;
 }
 
-/* 响应式适配 */
+/* ========================================
+   Footer 样式 - 与 Homepage 保持一致
+   ======================================== */
+
+.footer {
+    background: var(--dark);
+    color: white;
+    padding: 4rem 2rem 2rem;
+    margin-top: 5rem;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.footer-section h4 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: var(--accent);
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-section a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.footer-section a:hover {
+    color: var(--accent);
+    padding-left: 5px;
+}
+
+.footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+}
+
+.footer-bottom p {
+    opacity: 0.8;
+    margin-bottom: 1rem;
+}
+
+.footer-features {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.feature-tag {
+    background: rgba(255,255,255,0.1);
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+}
+
+/* 返回顶部按钮 */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(67, 97, 238, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    z-index: 999;
+}
+
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    transform: translateY(-5px);
+}
+
+/* ========================================
+   面包屑导航 - 与 Homepage 保持一致
+   ======================================== */
+
+.breadcrumb {
+    max-width: 1200px;
+    margin: 1.5rem auto;
+    padding: 1rem 2rem;
+    background: var(--glass);
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    color: var(--dark);
+}
+
+.breadcrumb a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-separator {
+    color: var(--gray);
+}
+
+.breadcrumb-current {
+    color: var(--gray);
+}
+
+/* ========================================
+   响应式适配 - 移动端适配
+   ======================================== */
+
+@media (max-width: 992px) {
+    .navbar {
+        padding: 1rem 1.5rem;
+    }
+
+    .main-nav {
+        display: none;
+    }
+
+    .function-buttons {
+        display: none;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+  }
+
+
 @media (max-width: 768px) {
     .game-hero {
         min-height: auto;
@@ -121,6 +864,10 @@
     .theorems-grid {
         grid-template-columns: 1fr;
     }
+
+    .container {
+        padding: 0 1rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -131,5 +878,9 @@
     .theorem-card {
         min-height: auto;
         padding: 2rem;
+    }
+
+    .logo-text {
+        font-size: 1.2rem;
     }
 }
